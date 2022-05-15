@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">装具色見本</string>
+    <string name="image1">image1</string>
+    <string name="image2">image2</string>
+    <string name="image3">image3</string>
+    <string name="image4">image4</string>
+    <string name="image5">image5</string>
+    <string name="image6">image6</string>
+    <string name="image7">image7</string>
+    <string name="image8">image8</string>
+    <string name="image9">image9</string>
+    <string name="nb">NB</string>
+    <string name="ftn">FTN</string>
+    <string name="slb">SLB</string>
+    <string name="pl">PL</string>
+    <string name="plastic">プラスチック</string>
+    <string name="belt">ベルト</string>
+    <string name="utibari">内張り</string>
+    <string name="sponge">スポンジ</string>
+    <string name="felt">フェルト</string>
+    <string name="leather">革</string>
+    <string name="string">糸</string>
+    <string name="kan">カン</string>
+    <string name="button">ボタン</string>
+    <string name="back">戻る</string>
+</resources>

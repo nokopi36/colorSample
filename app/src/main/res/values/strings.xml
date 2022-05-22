@@ -9,10 +9,10 @@
     <string name="image7">image7</string>
     <string name="image8">image8</string>
     <string name="image9">image9</string>
-    <string name="nb">NB</string>
-    <string name="ftn">FTN</string>
+    <string name="nb">ナイトブレース</string>
+    <string name="ftn">フットプレート</string>
     <string name="slb">SLB</string>
-    <string name="pl">PL</string>
+    <string name="pl">プレーリーくん</string>
     <string name="plastic">プラスチック</string>
     <string name="belt">ベルト</string>
     <string name="utibari">内張り</string>
@@ -23,4 +23,5 @@
     <string name="kan">カン</string>
     <string name="button">ボタン</string>
     <string name="back">戻る</string>
+    <string name="privacyPolicy">プライバシーポリシー</string>
 </resources>

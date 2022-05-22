@@ -17,14 +17,14 @@ class ChangeColors {
             R.drawable.button_red, R.drawable.button_lightgreen, R.drawable.button_mandarinorange, R.drawable.button_framingopink, R.drawable.button_beigerose, R.drawable.button_sapphireblue)
         val buttonsColor = listOf(R.drawable.button_white, R.drawable.button_black, R.drawable.button_blue, R.drawable.button_red, R.drawable.button_green, R.drawable.button_yamabukitya, R.drawable.button_sepia,
             R.drawable.button_framingopink, R.drawable.button_cork, R.drawable.button_vanilla)
-        val plColor = listOf(R.drawable.button_lightsalmon, R.drawable.button_white, R.drawable.button_black, R.drawable.button_red, R.drawable.button_green, R.drawable.button_blue, R.drawable.button_deepskyblue, R.drawable.button_maroon,
+        val regPlasticsColor = listOf(R.drawable.button_lightsalmon, R.drawable.button_white, R.drawable.button_black, R.drawable.button_red, R.drawable.button_green, R.drawable.button_blue, R.drawable.button_deepskyblue, R.drawable.button_maroon,
             R.drawable.butyon_hotpink)
         val plSpongesColor = listOf(R.drawable.button_white, R.drawable.button_black, R.drawable.button_mint, R.drawable.button_lightgreen, R.drawable.button_deepskyblue
             , R.drawable.button_orange, R.drawable.button_pink)
         val whiteBlack = listOf(R.drawable.button_white, R.drawable.button_black)
     }
 
-    fun changePlColors(d: Drawable?, position: Int, imageView: ImageView){
+    fun changeRegPlasticColors(d: Drawable?, position: Int, imageView: ImageView){
         when(position){
             0 -> {
                 changeColor(d!!, CustomColor.lightsalmon, imageView)

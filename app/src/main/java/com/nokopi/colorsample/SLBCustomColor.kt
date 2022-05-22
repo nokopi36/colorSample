@@ -56,11 +56,11 @@ class SLBCustomColor : AppCompatActivity() {
         imageView10.setImageResource(R.drawable.slb10)
 
         val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
-        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.regPlasticsColor)
+        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBPlasticsColor)
         image1Spinner.adapter = customDropDownAdapter1
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeRegPlasticColors(d1, position, imageView)
+                changeColors.changeNBSLBPlasticColors(d1, position, imageView)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }

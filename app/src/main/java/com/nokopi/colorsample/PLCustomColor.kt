@@ -44,7 +44,7 @@ class PLCustomColor: AppCompatActivity() {
         imageView6.setImageResource(R.drawable.pl6)
 
         val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
-        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.plasticsColor)
+        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.plasticsColorSpinner)
         image1Spinner.adapter = customDropDownAdapter1
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
@@ -53,7 +53,7 @@ class PLCustomColor: AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter2 = CustomSpinnerAdapter(ChangeColors.plSpongesColor)
+        val customDropDownAdapter2 = CustomSpinnerAdapter(ChangeColors.plSpongesColorSpinner)
         val image2Spinner: Spinner = findViewById(R.id.image2Spinner)
         image2Spinner.adapter = customDropDownAdapter2
         image2Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -63,7 +63,7 @@ class PLCustomColor: AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter3 = CustomSpinnerAdapter(ChangeColors.bandsColor)
+        val customDropDownAdapter3 = CustomSpinnerAdapter(ChangeColors.bandsColorSpinner)
         val image3Spinner: Spinner = findViewById(R.id.image3Spinner)
         image3Spinner.adapter = customDropDownAdapter3
         image3Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -73,7 +73,7 @@ class PLCustomColor: AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter4 = CustomSpinnerAdapter(ChangeColors.buttonsColor)
+        val customDropDownAdapter4 = CustomSpinnerAdapter(ChangeColors.buttonsColorSpinner)
         val image4Spinner: Spinner = findViewById(R.id.image4Spinner)
         image4Spinner.adapter = customDropDownAdapter4
         image4Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -83,7 +83,7 @@ class PLCustomColor: AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter5 = CustomSpinnerAdapter(ChangeColors.whiteBlack)
+        val customDropDownAdapter5 = CustomSpinnerAdapter(ChangeColors.whiteBlackSpinner)
         val image5Spinner: Spinner = findViewById(R.id.image5Spinner)
         image5Spinner.adapter = customDropDownAdapter5
         image5Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{

@@ -56,7 +56,7 @@ class FTNCustomColor : AppCompatActivity() {
         imageView10.setImageResource(R.drawable.ftn10)
 
         val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
-        val customDropDownAdapter12345 = CustomSpinnerAdapter(ChangeColors.leathersColor)
+        val customDropDownAdapter12345 = CustomSpinnerAdapter(ChangeColors.leathersColorSpinner)
         image1Spinner.adapter = customDropDownAdapter12345
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
@@ -101,7 +101,7 @@ class FTNCustomColor : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter67 = CustomSpinnerAdapter(ChangeColors.whiteBlack)
+        val customDropDownAdapter67 = CustomSpinnerAdapter(ChangeColors.whiteBlackSpinner)
         val image6Spinner: Spinner = findViewById(R.id.image6Spinner)
         image6Spinner.adapter = customDropDownAdapter67
         image6Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -120,7 +120,7 @@ class FTNCustomColor : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter8 = CustomSpinnerAdapter(ChangeColors.buttonsColor)
+        val customDropDownAdapter8 = CustomSpinnerAdapter(ChangeColors.buttonsColorSpinner)
         val image8Spinner: Spinner = findViewById(R.id.image8Spinner)
         image8Spinner.adapter = customDropDownAdapter8
         image8Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -130,7 +130,7 @@ class FTNCustomColor : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val customDropDownAdapter9 = CustomSpinnerAdapter(ChangeColors.stringsColor)
+        val customDropDownAdapter9 = CustomSpinnerAdapter(ChangeColors.stringsColorSpinner)
         val image9Spinner: Spinner = findViewById(R.id.image9Spinner)
         image9Spinner.adapter = customDropDownAdapter9
         image9Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{

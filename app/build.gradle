@@ -7,12 +7,11 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.nokopi.OColorDesign"
+        applicationId "com.nokopi.colorsample"
         minSdk 21
         targetSdk 30
-        versionCode 1
-        versionName "Beta1.0.0"
-
+        versionCode 11
+        versionName "Beta1.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

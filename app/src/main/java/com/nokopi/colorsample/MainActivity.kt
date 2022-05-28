@@ -27,7 +27,7 @@ import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val MY_REQUEST_CODE = 0
+    private val MY_REQUEST_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -27,20 +27,11 @@ import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
 
-//    private var mAppUpdateManager: AppUpdateManager? = null
-//    private val RC_APP_UPDATE = 0
-//    private var inAppUpdateType = 0
-//    private var appUpdateInfoTask: Task<AppUpdateInfo>? = null
-//    private var installStateUpdatedListener: InstallStateUpdatedListener? = null
     private val MY_REQUEST_CODE = 0
-//    private val appUpdateManager = AppUpdateManagerFactory.create(this)
-//    // Returns an intent object that you use to check for an update.
-//    private val appUpdateInfoTask = appUpdateManager.appUpdateInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -111,23 +102,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(plIntent)
         }
 
-        // Creates instance of the manager.
-//        mAppUpdateManager = AppUpdateManagerFactory.create(this)
-//        // Returns an intent object that you use to check for an update.
-//        appUpdateInfoTask = mAppUpdateManager!!.appUpdateInfo
-//        //lambda operation used for below listener
-//        //For flexible update
-//        installStateUpdatedListener = InstallStateUpdatedListener { installState: InstallState ->
-//            if (installState.installStatus() == InstallStatus.DOWNLOADED) {
-//                popupSnackbarForCompleteUpdate()
-//            }
-//        }
-//        mAppUpdateManager!!.registerListener(installStateUpdatedListener!!)
-//
-//        //For Immediate
-//        inAppUpdateType = AppUpdateType.IMMEDIATE //1
-//        inAppUpdate()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -144,46 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-//        //For Immediate
-//        inAppUpdateType = AppUpdateType.IMMEDIATE //1
-//        inAppUpdate()
-        super.onStart()
-    }
-
-    override fun onDestroy() {
-//        mAppUpdateManager!!.unregisterListener(installStateUpdatedListener!!)
-        super.onDestroy()
-    }
-
     override fun onResume() {
-//        try {
-//            mAppUpdateManager!!.appUpdateInfo.addOnSuccessListener { appUpdateInfo: AppUpdateInfo ->
-//                if (appUpdateInfo.updateAvailability() ==
-//                    UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-//                ) {
-//                    // If an in-app update is already running, resume the update.
-//                    try {
-//                        mAppUpdateManager!!.startUpdateFlowForResult(
-//                            appUpdateInfo,
-//                            inAppUpdateType,
-//                            this,
-//                            RC_APP_UPDATE
-//                        )
-//                    } catch (e: IntentSender.SendIntentException) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//            mAppUpdateManager!!.appUpdateInfo.addOnSuccessListener { appUpdateInfo: AppUpdateInfo ->
-//                //For flexible update
-//                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-//                    popupSnackbarForCompleteUpdate()
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
         super.onResume()
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
@@ -204,70 +139,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == RC_APP_UPDATE) {
-//            //when user clicks update button
-//            when {
-//                resultCode == RESULT_OK -> {
-//                    Toast.makeText(this@MainActivity, "App download starts...", Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//                resultCode != RESULT_CANCELED -> {
-//                    //if you want to request the update again just call checkUpdate()
-//                    Toast.makeText(this@MainActivity, "App download canceled.", Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//                resultCode == ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
-//                    Toast.makeText(this@MainActivity, "App download failed.", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        }
-//    }
-
-//    private fun inAppUpdate() {
-//        try {
-//            // Checks that the platform will allow the specified type of update.
-//            appUpdateInfoTask!!.addOnSuccessListener { appUpdateInfo ->
-//                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE // For a flexible update, use AppUpdateType.FLEXIBLE
-//                    && appUpdateInfo.isUpdateTypeAllowed(inAppUpdateType)
-//                ) {
-//                    // Request the update.
-//                    try {
-//                        mAppUpdateManager?.startUpdateFlowForResult( // Pass the intent that is returned by 'getAppUpdateInfo()'.
-//                            appUpdateInfo,  // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
-//                            inAppUpdateType,  // The current activity making the update request.
-//                            this@MainActivity,  // Include a request code to later monitor this update request.
-//                            RC_APP_UPDATE
-//                        )
-//                    } catch (ignored: IntentSender.SendIntentException) {
-//                    }
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
-//
-//    private fun popupSnackbarForCompleteUpdate() {
-//        try {
-//            val snackbar = Snackbar.make(
-//                findViewById(android.R.id.content),
-//                "An update has just been downloaded.\nRestart to update",
-//                Snackbar.LENGTH_INDEFINITE
-//            )
-//            snackbar.setAction("INSTALL") { view: View? ->
-//                if (mAppUpdateManager != null) {
-//                    mAppUpdateManager!!.completeUpdate()
-//                }
-//            }
-//            snackbar.setActionTextColor(resources.getColor(R.color.white))
-//            snackbar.show()
-//        } catch (e: Resources.NotFoundException) {
-//            e.printStackTrace()
-//        }
-//    }
 
     fun gotoPrivacyPolicy(v: View){
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyotaHiyama/colorSample/blob/master/Privacy%20Policy"))

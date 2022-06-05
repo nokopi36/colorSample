@@ -68,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/privacyPolicy"
+        android:textSize="16sp"
         android:textColor="@color/blue"
         android:clickable="true"
         android:focusable="true"

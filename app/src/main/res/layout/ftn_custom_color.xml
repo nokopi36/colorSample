@@ -352,7 +352,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="30sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/felt" />
+                        android:text="@string/shoeSole" />
 
                     <Spinner
                         android:layout_width="wrap_content"

@@ -25,4 +25,5 @@
     <string name="back">戻る</string>
     <string name="privacyPolicy">プライバシーポリシー</string>
     <string name="shoeSole">靴底</string>
+    <string name="name">氏名</string>
 </resources>

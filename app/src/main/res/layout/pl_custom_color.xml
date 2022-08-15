@@ -52,6 +52,15 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.6"/>
 
+    <EditText
+        android:id="@+id/personName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:inputType="textPersonName" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -60,7 +69,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ImageView
@@ -71,7 +80,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ImageView
@@ -82,7 +91,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ImageView
@@ -93,7 +102,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ImageView
@@ -104,7 +113,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ImageView
@@ -115,7 +124,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/personName"
         app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline60"/>
 
     <ScrollView

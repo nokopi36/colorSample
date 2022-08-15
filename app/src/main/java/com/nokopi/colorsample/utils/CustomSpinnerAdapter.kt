@@ -1,10 +1,11 @@
-package com.nokopi.colorsample
+package com.nokopi.colorsample.utils
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import com.nokopi.colorsample.R
 
 class CustomSpinnerAdapter(private val imageResIdList: List<Int>) : BaseAdapter() {
 

@@ -2,18 +2,25 @@ package com.nokopi.colorsample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.nokopi.colorsample.utils.ChangeColors
+import com.nokopi.colorsample.utils.CustomSpinnerAdapter
+import com.nokopi.colorsample.utils.KeyboardUtils
 
 class SLBCustomColor : AppCompatActivity() {
+    private lateinit var mainLayout: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.slb_custom_color)
+        mainLayout =findViewById(R.id.main_layout)
 
         val changeColors = ChangeColors()
 
@@ -142,4 +149,12 @@ class SLBCustomColor : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
     }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val focusView = currentFocus ?: return true
+        KeyboardUtils.hideKeyboard(focusView)
+        mainLayout.requestFocus()
+        return false
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.nokopi.colorsample
+package com.nokopi.colorsample.utils
 
 object CustomColor {
     val black = "#000000"

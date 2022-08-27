@@ -1,8 +1,6 @@
 package com.nokopi.colorsample
 
 import android.content.Intent
-import android.content.IntentSender
-import android.content.res.Resources
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,11 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
@@ -140,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    fun gotoPrivacyPolicy(v: View){
+    fun gotoPrivacyPolicy(view: View) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyotaHiyama/colorSample/blob/master/Privacy%20Policy"))
         startActivity(intent)
     }

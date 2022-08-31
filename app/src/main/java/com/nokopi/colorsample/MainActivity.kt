@@ -17,6 +17,10 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
+import com.nokopi.colorsample.view.CustomFTNButton
+import com.nokopi.colorsample.view.CustomNBButton
+import com.nokopi.colorsample.view.CustomPLButton
+import com.nokopi.colorsample.view.CustomSLBButton
 import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
@@ -66,10 +70,14 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        val nbButton: Button = findViewById(R.id.nbButton)
-        val ftnButton: Button = findViewById(R.id.ftnButton)
-        val slbButton: Button = findViewById(R.id.slbButton)
-        val plButton: Button = findViewById(R.id.plButton)
+//        val nbButton: Button = findViewById(R.id.nbButton)
+        val nbButton: CustomNBButton = findViewById(R.id.nbButton)
+//        val ftnButton: Button = findViewById(R.id.ftnButton)
+        val ftnButton: CustomFTNButton = findViewById(R.id.ftnButton)
+//        val slbButton: Button = findViewById(R.id.slbButton)
+        val slbButton: CustomSLBButton = findViewById(R.id.slbButton)
+//        val plButton: Button = findViewById(R.id.plButton)
+        val plButton: CustomPLButton = findViewById(R.id.plButton)
 
 
         nbButton.setOnClickListener {

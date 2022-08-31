@@ -2,9 +2,11 @@ package com.nokopi.colorsample
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -19,12 +21,16 @@ class NBCustomColor : AppCompatActivity() {
         setContentView(R.layout.activity_nb_custom_color)
         mainLayout =findViewById(R.id.main_layout)
 
+        val toolbar = findViewById<Toolbar>(R.id.title)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val changeColors = ChangeColors()
 
-        val backButton: Button = findViewById(R.id.backButton)
-        backButton.setOnClickListener {
-            finish()
-        }
+//        val backButton: Button = findViewById(R.id.backButton)
+//        backButton.setOnClickListener {
+//            finish()
+//        }
 
         val imageView: ImageView = findViewById(R.id.imageView)
         val imageView2: ImageView = findViewById(R.id.imageView2)
@@ -134,6 +140,13 @@ class NBCustomColor : AppCompatActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home){
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

@@ -9,43 +9,53 @@
     android:id="@+id/main_layout"
     android:focusableInTouchMode="true">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/backButton"
-        android:text="@string/back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline10"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/vertical_guideline20"/>
-
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/name"
-        android:text="@string/slb"
-        android:gravity="center_horizontal"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:background="#cddc39"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/buff"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline10"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/vertical_guideline20"/>
+        app:title="@string/slb"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/vertical_guideline20"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2"/>
+<!--    <Button-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/backButton"-->
+<!--        android:text="@string/back"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline10"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="@id/vertical_guideline20"/>-->
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guideline10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05"/>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:id="@+id/name"-->
+<!--        android:text="@string/slb"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:textSize="25sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:background="#cddc39"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline10"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="@id/vertical_guideline20"/>-->
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/vertical_guideline20"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintGuide_percent="0.2"/>-->
+
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:id="@+id/horizontal_guideline10"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintGuide_percent="0.05"/>-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guideline60"
@@ -59,7 +69,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:hint="@string/name"
-        app:layout_constraintTop_toTopOf="@id/horizontal_guideline10"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintLeft_toLeftOf="parent"
         android:inputType="textPersonName" />
 

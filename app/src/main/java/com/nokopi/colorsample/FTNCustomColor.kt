@@ -12,14 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nokopi.colorsample.utils.ChangeColors
-import com.nokopi.colorsample.utils.CustomSpinnerAdapter
+import com.nokopi.colorsample.view.CustomSpinnerAdapter
 import com.nokopi.colorsample.utils.KeyboardUtils
 
 class FTNCustomColor : AppCompatActivity() {
     private lateinit var mainLayout: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ftn_custom_color)
+        setContentView(R.layout.activity_ftn_custom_color)
         mainLayout =findViewById(R.id.main_layout)
 
         val changeColors = ChangeColors()

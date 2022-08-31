@@ -9,14 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nokopi.colorsample.utils.ChangeColors
-import com.nokopi.colorsample.utils.CustomSpinnerAdapter
+import com.nokopi.colorsample.view.CustomSpinnerAdapter
 import com.nokopi.colorsample.utils.KeyboardUtils
 
 class NBCustomColor : AppCompatActivity() {
     private lateinit var mainLayout: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.nb_custom_color)
+        setContentView(R.layout.activity_nb_custom_color)
         mainLayout =findViewById(R.id.main_layout)
 
         val changeColors = ChangeColors()

@@ -1,4 +1,4 @@
-package com.nokopi.colorsample.utils
+package com.nokopi.colorsample.view
 
 import android.view.LayoutInflater
 import android.view.View

@@ -216,17 +216,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/plastic"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:textSize="25sp" />
+                        android:text="@string/button" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
-                        android:id="@+id/image1Spinner" />
+                        android:id="@+id/image9Spinner" />
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -237,7 +236,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/sponge" />
 
@@ -266,7 +265,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -287,7 +286,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -316,7 +315,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -337,7 +336,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/felt" />
 
@@ -366,7 +365,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/felt" />
 
@@ -387,7 +386,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/string" />
 
@@ -407,17 +406,25 @@
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30sp"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/button" />
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:id="@+id/image9Spinner" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plastic"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="20sp" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:id="@+id/image1Spinner" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

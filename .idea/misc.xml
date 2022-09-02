@@ -52,15 +52,17 @@
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/drawable/ring_button_white2.xml" value="0.3715" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_ftn_custom_color.xml" value="0.16545532278751604" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_main.xml" value="0.18819655521783182" />
-        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_nb_custom_color.xml" value="0.16545532278751604" />
-        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_pl_custom_color.xml" value="0.242520398912058" />
+        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_nb_custom_color.xml" value="0.12" />
+        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_pl_custom_color.xml" value="0.33" />
+        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/activity_slb_custom_color.xml" value="0.16545532278751604" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom.xml" value="0.16574074074074074" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_button.xml" value="0.31765711842667804" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_color.xml" value="0.1" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_fp_button.xml" value="0.16545532278751604" />
+        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_nb_button.xml" value="0.1" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_pll_button2.xml" value="0.15391192817443353" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_slb_button.xml" value="0.16545532278751604" />
-        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_spinner_item.xml" value="0.13177083333333334" />
+        <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/custom_spinner_item.xml" value="0.33" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/ftn_custom_color.xml" value="0.33" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/layout.xml" value="0.31567028985507245" />
         <entry key="..\:/Users/Public/AndroidStudioProjects/colorSample/app/src/main/res/layout/mb_custom_color.xml" value="0.33" />

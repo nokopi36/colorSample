@@ -21,6 +21,7 @@ class ChangeColors {
             R.drawable.button_tetuguro,
             R.drawable.button_black
         )
+        val leathersColorSpinnerString = listOf("白", "黄", "赤", "ベージュ", "ピンク", "紫", "紺", "青", "緑", "茶", "黒")
         val leathersColor = listOf(
             CustomColor.white, CustomColor.kikutinashi, CustomColor.red, CustomColor.hatimitu, CustomColor.mumei, CustomColor.deeproyalpurple,
             CustomColor.midnightblue, CustomColor.blue, CustomColor.seagreen, CustomColor.tetuguro, CustomColor.black)
@@ -31,6 +32,7 @@ class ChangeColors {
             R.drawable.button_lightskyblue,
             R.drawable.button_black
         )
+        val bandsColorSpinnerString = listOf("ピンク", "青", "水色", "黒")
         val bandsColor = listOf(CustomColor.pink, CustomColor.blue, CustomColor.lightskyblue, CustomColor.black)
 
         val spongesColorSpinner = listOf(
@@ -39,11 +41,11 @@ class ChangeColors {
             R.drawable.button_black,
             R.drawable.button_orange,
             R.drawable.button_pink,
-            R.drawable.button_zenithblue
-            ,
+            R.drawable.button_zenithblue,
             R.drawable.button_aquamarine,
             R.drawable.button_lightgreen
         )
+        val spongesColorSpinnerString = listOf("白", "ベージュ", "黒", "オレンジ", "ピンク", "青", "ミント", "黄緑")
         val spongesColor = listOf(
             CustomColor.white, CustomColor.sandybrown, CustomColor.black, CustomColor.orange, CustomColor.pink, CustomColor.zenithblue
             , CustomColor.aquamarine, CustomColor.lightgreen)
@@ -55,6 +57,7 @@ class ChangeColors {
             R.drawable.button_green,
             R.drawable.button_black
         )
+        val plasticsColorSpinnerString = listOf("白", "赤", "青", "緑", "黒")
         val plasticsColor = listOf(CustomColor.white, CustomColor.red, CustomColor.blue, CustomColor.green, CustomColor.black)
 
         val stringsColorSpinner = listOf(
@@ -73,6 +76,7 @@ class ChangeColors {
             R.drawable.button_tetuguro,
             R.drawable.button_black
         )
+        val stringsColorSpinnerString = listOf("白", "黄", "オレンジ", "赤", "ベージュ", "ピンク", "紫", "紺", "青", "水色", "緑", "黄緑", "茶", "黒")
         val stringsColor = listOf(
             CustomColor.white, CustomColor.yellow, CustomColor.orange, CustomColor.red, CustomColor.beigerose, CustomColor.mumei,
             CustomColor.mediumslateblue, CustomColor.midnightblue, CustomColor.blue, CustomColor.lightskyblue, CustomColor.green, CustomColor.lightgreen, CustomColor.tetuguro,
@@ -89,6 +93,7 @@ class ChangeColors {
             R.drawable.button_tetuguro,
             R.drawable.button_black
         )
+        val buttonsColorSpinnerString = listOf("白", "黄", "赤", "ベージュ", "ピンク", "青", "緑", "茶", "黒")
         val buttonsColor = listOf(
             CustomColor.white, CustomColor.kikutinashi, CustomColor.red, CustomColor.vanilla, CustomColor.mumei, CustomColor.blue, CustomColor.green,
             CustomColor.tetuguro, CustomColor.black)
@@ -104,6 +109,7 @@ class ChangeColors {
             R.drawable.button_kogetya,
             R.drawable.button_black
         )
+        val nbSLBPlasticsColorSpinnerString = listOf("白", "赤", "ベージュ", "ピンク", "青", "水色", "緑", "茶", "黒")
         val nbSLBPlasticsColor = listOf(
             CustomColor.white, CustomColor.red, CustomColor.yuou, CustomColor.rosepink, CustomColor.blue, CustomColor.lightskyblue, CustomColor.green,
             CustomColor.kogetya, CustomColor.black)
@@ -113,16 +119,17 @@ class ChangeColors {
             R.drawable.button_orange,
             R.drawable.button_pink,
             R.drawable.button_zenithblue,
-            R.drawable.button_aquamarine
-            ,
+            R.drawable.button_aquamarine,
             R.drawable.button_lightgreen,
             R.drawable.button_black
         )
+        val plSpongeColorSpinnerString = listOf("白", "オレンジ", "ピンク", "青", "ミント", "黄緑", "黒")
         val plSpongesColor = listOf(
             CustomColor.white, CustomColor.orange, CustomColor.pink, CustomColor.zenithblue, CustomColor.aquamarine
             , CustomColor.lightgreen, CustomColor.black)
 
         val whiteBlackSpinner = listOf(R.drawable.button_white, R.drawable.button_black)
+        val whiteBlackSpinnerString = listOf("白", "黒")
         val whiteBlack = listOf(CustomColor.white, CustomColor.black)
     }
 

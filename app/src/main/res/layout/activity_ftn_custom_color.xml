@@ -216,7 +216,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -238,7 +238,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -268,7 +268,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -290,7 +290,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -320,7 +320,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/leather" />
 
@@ -342,7 +342,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/felt" />
 
@@ -372,7 +372,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/shoeSole" />
 
@@ -394,7 +394,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="30sp"
+                        android:textSize="20sp"
                         android:layout_gravity="center_vertical"
                         android:text="@string/button" />
 
@@ -418,7 +418,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30sp"
+                    android:textSize="20sp"
                     android:layout_gravity="center_vertical"
                     android:text="@string/string" />
 

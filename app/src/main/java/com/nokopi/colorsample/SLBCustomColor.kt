@@ -1,10 +1,10 @@
 package com.nokopi.colorsample
 
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ImageView
@@ -29,11 +29,6 @@ class SLBCustomColor : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val changeColors = ChangeColors()
-
-//        val backButton: Button = findViewById(R.id.backButton)
-//        backButton.setOnClickListener {
-//            finish()
-//        }
 
         val imageView: ImageView = findViewById(R.id.imageView)
         val imageView2: ImageView = findViewById(R.id.imageView2)

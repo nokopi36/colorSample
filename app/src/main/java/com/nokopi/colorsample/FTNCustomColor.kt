@@ -30,11 +30,6 @@ class FTNCustomColor : AppCompatActivity() {
 
         val changeColors = ChangeColors()
 
-//        val backButton: Button = findViewById(R.id.backButton)
-//        backButton.setOnClickListener {
-//            finish()
-//        }
-
         val imageView: ImageView = findViewById(R.id.imageView)
         val imageView2: ImageView = findViewById(R.id.imageView2)
         val imageView3: ImageView = findViewById(R.id.imageView3)

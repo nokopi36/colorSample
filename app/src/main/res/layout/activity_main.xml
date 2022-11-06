@@ -56,6 +56,18 @@
                     android:layout_height="wrap_content"
                     android:text="@string/pl" />
 
+                <com.nokopi.colorsample.view.CustomPOGOButton
+                    android:id="@+id/pogoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pogo" />
+
+                <com.nokopi.colorsample.view.CustomAButton
+                    android:id="@+id/aButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/a" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

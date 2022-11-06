@@ -17,10 +17,7 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
-import com.nokopi.colorsample.view.CustomFTNButton
-import com.nokopi.colorsample.view.CustomNBButton
-import com.nokopi.colorsample.view.CustomPLButton
-import com.nokopi.colorsample.view.CustomSLBButton
+import com.nokopi.colorsample.view.*
 import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
@@ -74,6 +71,8 @@ class MainActivity : AppCompatActivity() {
         val ftnButton: CustomFTNButton = findViewById(R.id.ftnButton)
         val slbButton: CustomSLBButton = findViewById(R.id.slbButton)
         val plButton: CustomPLButton = findViewById(R.id.plButton)
+        val pogoButton: CustomPOGOButton = findViewById(R.id.pogoButton)
+        val aButton: CustomAButton = findViewById(R.id.aButton)
 
 
         nbButton.setOnClickListener {
@@ -98,6 +97,16 @@ class MainActivity : AppCompatActivity() {
             val plIntent = Intent(this, PLCustomColor::class.java)
             plIntent.putExtra("type", "slb")
             startActivity(plIntent)
+        }
+
+        pogoButton.setOnClickListener {
+            val pogoIntent = Intent(this, POGOCustomColor::class.java)
+            startActivity(pogoIntent)
+        }
+
+        aButton.setOnClickListener{
+            val aIntent = Intent(this, ACustomColor::class.java)
+            startActivity(aIntent)
         }
 
     }
@@ -139,7 +148,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun gotoPrivacyPolicy(view: View) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RyotaHiyama/colorSample/blob/master/Privacy%20Policy"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://qiita.com/nokopi/private/610b9ee0ca4986d59b8d"))
         startActivity(intent)
     }
 

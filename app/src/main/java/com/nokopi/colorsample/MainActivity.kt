@@ -77,25 +77,21 @@ class MainActivity : AppCompatActivity() {
 
         nbButton.setOnClickListener {
             val nbIntent = Intent(this, NBCustomColor::class.java)
-            nbIntent.putExtra("type", "nb")
             startActivity(nbIntent)
         }
 
         ftnButton.setOnClickListener {
             val ftnIntent = Intent(this, FTNCustomColor::class.java)
-            ftnIntent.putExtra("type", "ftn")
             startActivity(ftnIntent)
         }
 
         slbButton.setOnClickListener {
             val slbIntent = Intent(this, SLBCustomColor::class.java)
-            slbIntent.putExtra("type", "slb")
             startActivity(slbIntent)
         }
 
         plButton.setOnClickListener {
             val plIntent = Intent(this, PLCustomColor::class.java)
-            plIntent.putExtra("type", "slb")
             startActivity(plIntent)
         }
 

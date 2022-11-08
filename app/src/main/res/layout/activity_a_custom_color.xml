@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/leather" />
+                        android:text="@string/plastic" />
 
                     <Spinner
                         android:layout_width="wrap_content"
@@ -213,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/leather" />
+                        android:text="@string/sponge" />
 
                     <Spinner
                         android:layout_width="wrap_content"
@@ -317,7 +317,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/felt" />
+                        android:text="@string/leather" />
 
                     <Spinner
                         android:layout_width="wrap_content"
@@ -347,7 +347,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/shoeSole" />
+                        android:text="@string/leather" />
 
                     <Spinner
                         android:layout_width="wrap_content"
@@ -369,7 +369,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/button" />
+                        android:text="@string/felt" />
 
                     <Spinner
                         android:layout_width="wrap_content"
@@ -388,18 +388,48 @@
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/string" />
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
 
-                <Spinner
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/button" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/image9Spinner" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/image9Spinner" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/string" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/image10Spinner" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

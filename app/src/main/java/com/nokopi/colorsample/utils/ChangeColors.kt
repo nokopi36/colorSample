@@ -98,7 +98,7 @@ class ChangeColors {
             CustomColor.white, CustomColor.kikutinashi, CustomColor.red, CustomColor.vanilla, CustomColor.mumei, CustomColor.blue, CustomColor.green,
             CustomColor.tetuguro, CustomColor.black)
 
-        val nbSLBPlasticsColorSpinner = listOf(
+        val nbSLBAPogoPlasticsColorSpinner = listOf(
             R.drawable.button_white,
             R.drawable.button_red,
             R.drawable.button_yuou,
@@ -109,8 +109,8 @@ class ChangeColors {
             R.drawable.button_kogetya,
             R.drawable.button_black
         )
-        val nbSLBPlasticsColorSpinnerString = listOf("白", "赤", "ベージュ", "ピンク", "青", "水色", "緑", "茶", "黒")
-        val nbSLBPlasticsColor = listOf(
+        val nbSLBAPogoPlasticsColorSpinnerString = listOf("白", "赤", "ベージュ", "ピンク", "青", "水色", "緑", "茶", "黒")
+        val nbSLBAPogoPlasticsColor = listOf(
             CustomColor.white, CustomColor.red, CustomColor.yuou, CustomColor.rosepink, CustomColor.blue, CustomColor.lightskyblue, CustomColor.green,
             CustomColor.kogetya, CustomColor.black)
 
@@ -134,7 +134,7 @@ class ChangeColors {
     }
 
     fun changeNBSLBPlasticColors(d: Drawable?, position: Int, imageView: ImageView){
-                changeColor(d!!, nbSLBPlasticsColor[position], imageView)
+                changeColor(d!!, nbSLBAPogoPlasticsColor[position], imageView)
     }
 
     fun changePLSpongeColors(d: Drawable?, position: Int, imageView: ImageView){

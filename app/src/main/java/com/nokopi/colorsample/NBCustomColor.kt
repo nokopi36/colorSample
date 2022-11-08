@@ -58,7 +58,7 @@ class NBCustomColor : AppCompatActivity() {
         imageView9.setImageResource(R.drawable.nb9)
 
         val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
-        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBPlasticsColorSpinner, ChangeColors.nbSLBPlasticsColorSpinnerString)
+        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBAPogoPlasticsColorSpinner, ChangeColors.nbSLBAPogoPlasticsColorSpinnerString)
         image1Spinner.adapter = customDropDownAdapter1
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {

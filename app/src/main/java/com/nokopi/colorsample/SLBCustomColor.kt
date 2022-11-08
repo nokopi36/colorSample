@@ -1,12 +1,9 @@
 package com.nokopi.colorsample
 
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
@@ -64,7 +61,7 @@ class SLBCustomColor : AppCompatActivity() {
         imageView10.setImageResource(R.drawable.slb10)
 
         val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
-        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBPlasticsColorSpinner, ChangeColors.nbSLBPlasticsColorSpinnerString)
+        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBAPogoPlasticsColorSpinner, ChangeColors.nbSLBAPogoPlasticsColorSpinnerString)
         image1Spinner.adapter = customDropDownAdapter1
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {

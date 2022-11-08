@@ -133,7 +133,7 @@ class ChangeColors {
         val whiteBlack = listOf(CustomColor.white, CustomColor.black)
     }
 
-    fun changeNBSLBPlasticColors(d: Drawable?, position: Int, imageView: ImageView){
+    fun changeNBSLBAPlasticColors(d: Drawable?, position: Int, imageView: ImageView){
                 changeColor(d!!, nbSLBAPogoPlasticsColor[position], imageView)
     }
 

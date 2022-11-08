@@ -65,7 +65,7 @@ class SLBCustomColor : AppCompatActivity() {
         image1Spinner.adapter = customDropDownAdapter1
         image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeNBSLBPlasticColors(d1, position, imageView)
+                changeColors.changeNBSLBAPlasticColors(d1, position, imageView)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }

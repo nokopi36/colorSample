@@ -4,39 +4,24 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import com.nokopi.colorsample.databinding.ActivitySlbCustomColorBinding
 import com.nokopi.colorsample.utils.ChangeColors
 import com.nokopi.colorsample.view.CustomSpinnerAdapter
 import com.nokopi.colorsample.utils.KeyboardUtils
 
 class SLBCustomColor : AppCompatActivity() {
-    private lateinit var mainLayout: ConstraintLayout
+    private lateinit var binding: ActivitySlbCustomColorBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_slb_custom_color)
-        mainLayout =findViewById(R.id.main_layout)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_slb_custom_color)
 
-        val toolbar = findViewById<Toolbar>(R.id.title)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val changeColors = ChangeColors()
-
-        val imageView: ImageView = findViewById(R.id.imageView)
-        val imageView2: ImageView = findViewById(R.id.imageView2)
-        val imageView3: ImageView = findViewById(R.id.imageView3)
-        val imageView4: ImageView = findViewById(R.id.imageView4)
-        val imageView5: ImageView = findViewById(R.id.imageView5)
-        val imageView6: ImageView = findViewById(R.id.imageView6)
-        val imageView7: ImageView = findViewById(R.id.imageView7)
-        val imageView8: ImageView = findViewById(R.id.imageView8)
-        val imageView9: ImageView = findViewById(R.id.imageView9)
-        val imageView10: ImageView = findViewById(R.id.imageView10)
 
         val d1: Drawable? = ContextCompat.getDrawable(this,R.drawable.slb1)
         val d2: Drawable? = ContextCompat.getDrawable(this,R.drawable.slb2)
@@ -48,101 +33,92 @@ class SLBCustomColor : AppCompatActivity() {
         val d8: Drawable? = ContextCompat.getDrawable(this,R.drawable.slb8)
         val d9: Drawable? = ContextCompat.getDrawable(this,R.drawable.slb9)
 
-        imageView.setImageDrawable(d1)
-        imageView2.setImageDrawable(d2)
-        imageView3.setImageDrawable(d3)
-        imageView4.setImageDrawable(d4)
-        imageView5.setImageDrawable(d5)
-        imageView6.setImageDrawable(d6)
-        imageView7.setImageDrawable(d7)
-        imageView8.setImageDrawable(d8)
-        imageView9.setImageDrawable(d9)
+        binding.imageView.setImageDrawable(d1)
+        binding.imageView2.setImageDrawable(d2)
+        binding.imageView3.setImageDrawable(d3)
+        binding.imageView4.setImageDrawable(d4)
+        binding.imageView5.setImageDrawable(d5)
+        binding.imageView6.setImageDrawable(d6)
+        binding.imageView7.setImageDrawable(d7)
+        binding.imageView8.setImageDrawable(d8)
+        binding.imageView9.setImageDrawable(d9)
 
-        imageView10.setImageResource(R.drawable.slb10)
+        binding.imageView10.setImageResource(R.drawable.slb10)
 
-        val image1Spinner: Spinner = findViewById(R.id.image1Spinner)
         val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBAPogoPlasticsColorSpinner, ChangeColors.nbSLBAPogoPlasticsColorSpinnerString)
-        image1Spinner.adapter = customDropDownAdapter1
-        image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image1Spinner.adapter = customDropDownAdapter1
+        binding.image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeNBSLBAPlasticColors(d1, position, imageView)
+                changeColors.changeNBSLBAPlasticColors(d1, position, binding.imageView)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
         val customDropDownAdapter2 = CustomSpinnerAdapter(ChangeColors.spongesColorSpinner, ChangeColors.spongesColorSpinnerString)
-        val image2Spinner: Spinner = findViewById(R.id.image2Spinner)
-        image2Spinner.adapter = customDropDownAdapter2
-        image2Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image2Spinner.adapter = customDropDownAdapter2
+        binding.image2Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeSpongeColors(d2, position, imageView2)
+                changeColors.changeSpongeColors(d2, position, binding.imageView2)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
         val customDropDownAdapter345 = CustomSpinnerAdapter(ChangeColors.leathersColorSpinner, ChangeColors.leathersColorSpinnerString)
-        val image3Spinner: Spinner = findViewById(R.id.image3Spinner)
-        image3Spinner.adapter = customDropDownAdapter345
-        image3Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image3Spinner.adapter = customDropDownAdapter345
+        binding.image3Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeLeatherColors(d3, position, imageView3)
+                changeColors.changeLeatherColors(d3, position, binding.imageView3)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val image4Spinner: Spinner = findViewById(R.id.image4Spinner)
-        image4Spinner.adapter = customDropDownAdapter345
-        image4Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image4Spinner.adapter = customDropDownAdapter345
+        binding.image4Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeLeatherColors(d4, position, imageView4)
+                changeColors.changeLeatherColors(d4, position, binding.imageView4)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val image5Spinner: Spinner = findViewById(R.id.image5Spinner)
-        image5Spinner.adapter = customDropDownAdapter345
-        image5Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image5Spinner.adapter = customDropDownAdapter345
+        binding.image5Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeLeatherColors(d5, position, imageView5)
+                changeColors.changeLeatherColors(d5, position, binding.imageView5)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
         val customDropDownAdapter67 = CustomSpinnerAdapter(ChangeColors.whiteBlackSpinner, ChangeColors.whiteBlackSpinnerString)
-        val image6Spinner: Spinner = findViewById(R.id.image6Spinner)
-        image6Spinner.adapter = customDropDownAdapter67
-        image6Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image6Spinner.adapter = customDropDownAdapter67
+        binding.image6Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeColorsWhiteOrBlack(d6, position, imageView6)
+                changeColors.changeColorsWhiteOrBlack(d6, position, binding.imageView6)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
-        val image7Spinner: Spinner = findViewById(R.id.image7Spinner)
-        image7Spinner.adapter = customDropDownAdapter67
-        image7Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image7Spinner.adapter = customDropDownAdapter67
+        binding.image7Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeColorsWhiteOrBlack(d7, position, imageView7)
+                changeColors.changeColorsWhiteOrBlack(d7, position, binding.imageView7)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
         val customDropDownAdapter8 = CustomSpinnerAdapter(ChangeColors.stringsColorSpinner, ChangeColors.stringsColorSpinnerString)
-        val image8Spinner: Spinner = findViewById(R.id.image8Spinner)
-        image8Spinner.adapter = customDropDownAdapter8
-        image8Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image8Spinner.adapter = customDropDownAdapter8
+        binding.image8Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeStringColors(d8, position, imageView8)
+                changeColors.changeStringColors(d8, position, binding.imageView8)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
 
         val customDropDownAdapter9 = CustomSpinnerAdapter(ChangeColors.buttonsColorSpinner, ChangeColors.buttonsColorSpinnerString)
-        val image9Spinner: Spinner = findViewById(R.id.image9Spinner)
-        image9Spinner.adapter = customDropDownAdapter9
-        image9Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image9Spinner.adapter = customDropDownAdapter9
+        binding.image9Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                changeColors.changeButtonColors(d9, position, imageView9)
+                changeColors.changeButtonColors(d9, position, binding.imageView9)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) { }
         }
@@ -158,7 +134,7 @@ class SLBCustomColor : AppCompatActivity() {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val focusView = currentFocus ?: return true
         KeyboardUtils.hideKeyboard(focusView)
-        mainLayout.requestFocus()
+        binding.mainLayout.requestFocus()
         return false
     }
 

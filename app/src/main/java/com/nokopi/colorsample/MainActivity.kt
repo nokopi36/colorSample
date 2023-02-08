@@ -6,27 +6,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.ActivityResult
-import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
-import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.tasks.Task
-import com.nokopi.colorsample.view.*
+import com.nokopi.colorsample.databinding.ActivityMainBinding
 import kotlin.Exception
 
 class MainActivity : AppCompatActivity() {
 
     private val MY_REQUEST_CODE = 1
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         val appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -53,54 +48,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
-        val versionNameText: TextView = findViewById(R.id.versionName)
-
         val version: String
         try {
             val packageName = packageName
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             version = packageInfo.versionName
-            "ver.$version".also { versionNameText.text = it }
+            "ver.$version".also { binding.versionName.text = it }
         } catch (e: Exception){
             e.printStackTrace()
         }
 
-        val nbButton: CustomNBButton = findViewById(R.id.nbButton)
-        val ftnButton: CustomFTNButton = findViewById(R.id.ftnButton)
-        val slbButton: CustomSLBButton = findViewById(R.id.slbButton)
-        val plButton: CustomPLButton = findViewById(R.id.plButton)
-        val pogoButton: CustomPOGOButton = findViewById(R.id.pogoButton)
-        val aButton: CustomAButton = findViewById(R.id.aButton)
-
-
-        nbButton.setOnClickListener {
+        binding.nbButton.setOnClickListener {
             val nbIntent = Intent(this, NBCustomColor::class.java)
             startActivity(nbIntent)
         }
 
-        ftnButton.setOnClickListener {
+        binding.ftnButton.setOnClickListener {
             val ftnIntent = Intent(this, FTNCustomColor::class.java)
             startActivity(ftnIntent)
         }
 
-        slbButton.setOnClickListener {
+        binding.slbButton.setOnClickListener {
             val slbIntent = Intent(this, SLBCustomColor::class.java)
             startActivity(slbIntent)
         }
 
-        plButton.setOnClickListener {
+        binding.plButton.setOnClickListener {
             val plIntent = Intent(this, PLCustomColor::class.java)
             startActivity(plIntent)
         }
 
-        pogoButton.setOnClickListener {
+        binding.pogoButton.setOnClickListener {
             val pogoIntent = Intent(this, POGOCustomColor::class.java)
             startActivity(pogoIntent)
         }
 
-        aButton.setOnClickListener{
+        binding.aButton.setOnClickListener{
             val aIntent = Intent(this, ACustomColor::class.java)
             startActivity(aIntent)
         }

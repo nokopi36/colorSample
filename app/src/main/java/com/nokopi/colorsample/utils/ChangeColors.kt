@@ -175,4 +175,45 @@ class ChangeColors {
         Log.i("colorCode", color)
     }
 
+    fun changeNBSLBAPlasticColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, nbSLBAPogoPlasticsColor[position])
+    }
+
+    fun changePLSpongeColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, plSpongesColor[position])
+    }
+
+    fun changeBandColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, bandsColor[position])
+    }
+
+    fun changeLeatherColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, leathersColor[position])
+    }
+
+    fun changePlasticColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, plasticsColor[position])
+    }
+
+    fun changeSpongeColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, spongesColor[position])
+    }
+
+    fun changeColorsWhiteOrBlack2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, whiteBlack[position])
+    }
+
+    fun changeStringColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, stringsColor[position])
+    }
+
+    fun changeButtonColors2(d: Drawable?, position: Int): Drawable{
+        return changeColor2(d!!, buttonsColor[position])
+    }
+
+    private fun changeColor2(draw : Drawable, color : String): Drawable{
+        draw.setTint(Color.parseColor(color))
+        return draw
+    }
+
 }

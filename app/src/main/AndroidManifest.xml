@@ -50,7 +50,7 @@
         <activity
             android:name=".ACustomColor"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity

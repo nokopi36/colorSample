@@ -1,24 +1,28 @@
 package com.nokopi.colorsample
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.nokopi.colorsample.databinding.ActivityACustomColorBinding
 import com.nokopi.colorsample.ui.AViewModel
+import com.nokopi.colorsample.ui.AViewModelFactory
 import com.nokopi.colorsample.utils.ChangeColors
 import com.nokopi.colorsample.utils.KeyboardUtils
 import com.nokopi.colorsample.view.CustomSpinnerAdapter
 
 class ACustomColor : AppCompatActivity() {
     private lateinit var binding: ActivityACustomColorBinding
+    private lateinit var viewModel: AViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_a_custom_color)
-        val viewModel = AViewModel(this)
+        viewModel = ViewModelProvider(this, AViewModelFactory(this))[AViewModel::class.java]
         binding = DataBindingUtil.setContentView(this, R.layout.activity_a_custom_color)
         binding.vm = viewModel
         binding.lifecycleOwner = this
@@ -55,6 +59,7 @@ class ACustomColor : AppCompatActivity() {
         binding.image1Spinner.adapter = customDropDownAdapter1
         binding.image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                Log.i("onItemSelected", "$position")
 //                changeColors.changeNBSLBAPlasticColors(d1, position, binding.imageView)
                 viewModel.updateD1(position)
             }

@@ -218,7 +218,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image1Spinner" />
+                            android:id="@+id/image1Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.plasticsColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.plasticsColorString}"/>-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected1(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -239,59 +242,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image7Spinner" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:baselineAligned="false">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
-
-                        <Spinner
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center_vertical"
-                            android:id="@+id/image3Spinner" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
-
-                        <Spinner
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center_vertical"
-                            android:id="@+id/image4Spinner" />
+                            android:id="@+id/image7Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected7(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -321,7 +275,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image5Spinner" />
+                            android:id="@+id/image3Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected3(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -343,7 +300,68 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image6Spinner" />
+                            android:id="@+id/image4Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected4(parent, view, position, id)}"/>-->
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/leather" />
+
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/image5Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected5(parent, view, position, id)}"/>-->
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/leather" />
+
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/image6Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected6(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -373,7 +391,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image2Spinner" />
+                            android:id="@+id/image2Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.whiteBlack}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.whiteBlackString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected2(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -395,7 +416,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image8Spinner" />
+                            android:id="@+id/image8Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.whiteBlack}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.whiteBlackString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected8(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -425,7 +449,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image9Spinner" />
+                            android:id="@+id/image9Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.buttonColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.buttonColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected9(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -447,7 +474,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image10Spinner" />
+                            android:id="@+id/image10Spinner"/>
+<!--                            setCustomSpinnerAdapterId="@{vm.stringColor}"-->
+<!--                            setCustomSpinnerAdapterString="@{vm.stringColorString}"-->
+<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected10(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 

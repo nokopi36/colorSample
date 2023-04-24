@@ -195,13 +195,13 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/string" />
+                            android:text="@string/sponge" />
 
                         <Spinner
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image7Spinner" />
+                            android:id="@+id/image2Spinner" />
 
                     </LinearLayout>
 
@@ -225,7 +225,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt1" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -247,7 +247,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt2" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -277,7 +277,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt3" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -329,13 +329,13 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/sponge" />
+                            android:text="@string/string" />
 
                         <Spinner
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image2Spinner" />
+                            android:id="@+id/image7Spinner" />
 
                     </LinearLayout>
 

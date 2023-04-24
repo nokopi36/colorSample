@@ -204,8 +204,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1">
+                        android:layout_gravity="center">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -228,24 +227,23 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1">
+                        android:layout_gravity="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/sponge" />
 
                         <Spinner
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image7Spinner"/>
-<!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
-<!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
-<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected7(parent, view, position, id)}"/>-->
+                            android:id="@+id/image2Spinner"/>
+                        <!--                            setCustomSpinnerAdapterId="@{vm.whiteBlack}"-->
+                        <!--                            setCustomSpinnerAdapterString="@{vm.whiteBlackString}"-->
+                        <!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected2(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
 
@@ -269,7 +267,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt1" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -294,7 +292,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt2" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -327,7 +325,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt3" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -352,7 +350,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt4" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -385,19 +383,18 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/sponge" />
+                            android:text="@string/belt5" />
 
                         <Spinner
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/image2Spinner"/>
-<!--                            setCustomSpinnerAdapterId="@{vm.whiteBlack}"-->
-<!--                            setCustomSpinnerAdapterString="@{vm.whiteBlackString}"-->
-<!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected2(parent, view, position, id)}"/>-->
+                            android:id="@+id/image7Spinner"/>
+                        <!--                            setCustomSpinnerAdapterId="@{vm.leatherColor}"-->
+                        <!--                            setCustomSpinnerAdapterString="@{vm.leatherColorString}"-->
+                        <!--                            android:onItemSelected="@{(parent, view, position, id) -> vm.onItemSelected7(parent, view, position, id)}"/>-->
 
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="wrap_content"

@@ -28,4 +28,13 @@
     <string name="name">氏名</string>
     <string name="pogo">ポーゴスティック</string>
     <string name="a">Aブレース</string>
+    <string name="belt1">ベルト1</string>
+    <string name="belt2">ベルト2</string>
+    <string name="belt3">ベルト3</string>
+    <string name="body">本体</string>
+    <string name="kahuband">カフバンド</string>
+    <string name="shoe_bottom">靴底</string>
+    <string name="ankle_band">足首バンド</string>
+    <string name="belt4">ベルト4</string>
+    <string name="belt5">ベルト5</string>
 </resources>

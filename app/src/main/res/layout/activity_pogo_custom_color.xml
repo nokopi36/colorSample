@@ -196,7 +196,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt2" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -226,7 +226,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt2" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -248,7 +248,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt3" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -278,7 +278,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/ankle_band" />
 
                         <Spinner
                             android:layout_width="wrap_content"
@@ -300,7 +300,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20sp"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/leather" />
+                            android:text="@string/belt4" />
 
                         <Spinner
                             android:layout_width="wrap_content"

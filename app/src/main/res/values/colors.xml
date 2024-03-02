@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="buff_100">#dfcda8</color>
+    <color name="buff_200">#caac71</color>
+    <color name="buff_400">#ad7900</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#0000ff</color>
+    <color name="buff">#caac71</color>
+    <color name="deepskyblue">#00dfff</color>
+    <color name="framingopink">#f5b2ac</color>
+    <color name="green">#008000</color>
+    <color name="lightblue">#87cefa</color>
+    <color name="lightgreen">#7cfc00</color>
+    <color name="lightsalmon">#ffa07a</color>
+    <color name="mandarinorange">#f3981d</color>
+    <color name="maroon">#6a1917</color>
+    <color name="mediumslateblue">#7b68ee</color>
+    <color name="mint">#00fa9a</color>
+    <color name="momosiotya">#1f3134</color>
+    <color name="orange">#ff8c00</color>
+    <color name="pink">#ff1493</color>
+    <color name="red">#ff0000</color>
+    <color name="sepia">#622d18</color>
+    <color name="summergreen">#009944</color>
+    <color name="hotpink">#ff69b4</color>
+    <color name="light_blue_400">#FF29B6F6</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_400">#FFBDBDBD</color>
+    <color name="gray_600">#FF757575</color>
+</resources>

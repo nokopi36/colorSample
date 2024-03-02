@@ -9,17 +9,17 @@ import com.nokopi.colorsample.R
 class ChangeColors {
     companion object{
         val leathersColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_kikutinashi,
-            R.drawable.button_red,
-            R.drawable.button_hatimitu,
-            R.drawable.button_mumei,
-            R.drawable.button_deeproyalpurple,
-            R.drawable.button_midnightblue,
-            R.drawable.button_blue,
-            R.drawable.button_seagreen,
-            R.drawable.button_tetuguro,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.kikutinashi,
+            R.drawable.red,
+            R.drawable.hatimitu,
+            R.drawable.mumei,
+            R.drawable.deeproyalpurple,
+            R.drawable.midnightblue,
+            R.drawable.blue,
+            R.drawable.seagreen,
+            R.drawable.tetuguro,
+            R.drawable.black
         )
         val leathersColorSpinnerString = listOf("白", "黄", "赤", "ベージュ", "ピンク", "紫", "紺", "青", "緑", "茶", "黒")
         val leathersColor = listOf(
@@ -27,23 +27,23 @@ class ChangeColors {
             CustomColor.midnightblue, CustomColor.blue, CustomColor.seagreen, CustomColor.tetuguro, CustomColor.black)
 
         val bandsColorSpinner = listOf(
-            R.drawable.button_pink,
-            R.drawable.button_blue,
-            R.drawable.button_lightskyblue,
-            R.drawable.button_black
+            R.drawable.pink,
+            R.drawable.blue,
+            R.drawable.lightskyblue,
+            R.drawable.black
         )
         val bandsColorSpinnerString = listOf("ピンク", "青", "水色", "黒")
         val bandsColor = listOf(CustomColor.pink, CustomColor.blue, CustomColor.lightskyblue, CustomColor.black)
 
         val spongesColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_sandybrown,
-            R.drawable.button_black,
-            R.drawable.button_orange,
-            R.drawable.button_pink,
-            R.drawable.button_zenithblue,
-            R.drawable.button_aquamarine,
-            R.drawable.button_lightgreen
+            R.drawable.white,
+            R.drawable.sandybrown,
+            R.drawable.black,
+            R.drawable.orange,
+            R.drawable.pink,
+            R.drawable.zenithblue,
+            R.drawable.aquamarine,
+            R.drawable.lightgreen
         )
         val spongesColorSpinnerString = listOf("白", "ベージュ", "黒", "オレンジ", "ピンク", "青", "ミント", "黄緑")
         val spongesColor = listOf(
@@ -51,30 +51,30 @@ class ChangeColors {
             , CustomColor.aquamarine, CustomColor.lightgreen)
 
         val plasticsColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_red,
-            R.drawable.button_blue,
-            R.drawable.button_green,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.red,
+            R.drawable.blue,
+            R.drawable.green,
+            R.drawable.black
         )
         val plasticsColorSpinnerString = listOf("白", "赤", "青", "緑", "黒")
         val plasticsColor = listOf(CustomColor.white, CustomColor.red, CustomColor.blue, CustomColor.green, CustomColor.black)
 
         val stringsColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_yellow,
-            R.drawable.button_orange,
-            R.drawable.button_red,
-            R.drawable.button_beigerose,
-            R.drawable.button_mumei,
-            R.drawable.button_mediumslateblue,
-            R.drawable.button_midnightblue,
-            R.drawable.button_blue,
-            R.drawable.button_lightskyblue,
-            R.drawable.button_green,
-            R.drawable.button_lightgreen,
-            R.drawable.button_tetuguro,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.yellow,
+            R.drawable.orange,
+            R.drawable.red,
+            R.drawable.beigerose,
+            R.drawable.mumei,
+            R.drawable.mediumslateblue,
+            R.drawable.midnightblue,
+            R.drawable.blue,
+            R.drawable.lightskyblue,
+            R.drawable.green,
+            R.drawable.lightgreen,
+            R.drawable.tetuguro,
+            R.drawable.black
         )
         val stringsColorSpinnerString = listOf("白", "黄", "オレンジ", "赤", "ベージュ", "ピンク", "紫", "紺", "青", "水色", "緑", "黄緑", "茶", "黒")
         val stringsColor = listOf(
@@ -83,15 +83,15 @@ class ChangeColors {
             CustomColor.black)
 
         val buttonsColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_kikutinashi,
-            R.drawable.button_red,
-            R.drawable.button_vanilla,
-            R.drawable.button_mumei,
-            R.drawable.button_blue,
-            R.drawable.button_green,
-            R.drawable.button_tetuguro,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.kikutinashi,
+            R.drawable.red,
+            R.drawable.vanilla,
+            R.drawable.mumei,
+            R.drawable.blue,
+            R.drawable.green,
+            R.drawable.tetuguro,
+            R.drawable.black
         )
         val buttonsColorSpinnerString = listOf("白", "黄", "赤", "ベージュ", "ピンク", "青", "緑", "茶", "黒")
         val buttonsColor = listOf(
@@ -99,15 +99,15 @@ class ChangeColors {
             CustomColor.tetuguro, CustomColor.black)
 
         val nbSLBAPogoPlasticsColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_red,
-            R.drawable.button_yuou,
-            R.drawable.button_rosepink,
-            R.drawable.button_blue,
-            R.drawable.button_lightskyblue,
-            R.drawable.button_green,
-            R.drawable.button_kogetya,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.red,
+            R.drawable.yuou,
+            R.drawable.rosepink,
+            R.drawable.blue,
+            R.drawable.lightskyblue,
+            R.drawable.green,
+            R.drawable.kogetya,
+            R.drawable.black
         )
         val nbSLBAPogoPlasticsColorSpinnerString = listOf("白", "赤", "ベージュ", "ピンク", "青", "水色", "緑", "茶", "黒")
         val nbSLBAPogoPlasticsColor = listOf(
@@ -115,20 +115,20 @@ class ChangeColors {
             CustomColor.kogetya, CustomColor.black)
 
         val plSpongesColorSpinner = listOf(
-            R.drawable.button_white,
-            R.drawable.button_orange,
-            R.drawable.button_pink,
-            R.drawable.button_zenithblue,
-            R.drawable.button_aquamarine,
-            R.drawable.button_lightgreen,
-            R.drawable.button_black
+            R.drawable.white,
+            R.drawable.orange,
+            R.drawable.pink,
+            R.drawable.zenithblue,
+            R.drawable.aquamarine,
+            R.drawable.lightgreen,
+            R.drawable.black
         )
         val plSpongeColorSpinnerString = listOf("白", "オレンジ", "ピンク", "青", "ミント", "黄緑", "黒")
         val plSpongesColor = listOf(
             CustomColor.white, CustomColor.orange, CustomColor.pink, CustomColor.zenithblue, CustomColor.aquamarine
             , CustomColor.lightgreen, CustomColor.black)
 
-        val whiteBlackSpinner = listOf(R.drawable.button_white, R.drawable.button_black)
+        val whiteBlackSpinner = listOf(R.drawable.white, R.drawable.black)
         val whiteBlackSpinnerString = listOf("白", "黒")
         val whiteBlack = listOf(CustomColor.white, CustomColor.black)
     }

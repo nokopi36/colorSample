@@ -17,16 +17,16 @@ class AViewModel(
     context: Context
 ) : ViewModel() {
     private val changeColors = ChangeColors()
-    val plasticsColor = ChangeColors.nbSLBAPogoPlasticsColorSpinner
-    val plasticsColorString = ChangeColors.nbSLBAPogoPlasticsColorSpinnerString
-    val whiteBlack = ChangeColors.whiteBlackSpinner
-    val whiteBlackString = ChangeColors.whiteBlackSpinnerString
-    val leatherColor = ChangeColors.leathersColorSpinner
-    val leatherColorString = ChangeColors.leathersColorSpinnerString
-    val buttonColor = ChangeColors.buttonsColorSpinner
-    val buttonColorString = ChangeColors.buttonsColorSpinnerString
-    val stringColor = ChangeColors.stringsColorSpinner
-    val stringColorString = ChangeColors.stringsColorSpinnerString
+    val plasticsColor = ChangeColors.nbSLBAPogoPlasticsColorMap.keys
+    val plasticsColorString = ChangeColors.nbSLBAPogoPlasticsColorMap.values
+    val whiteBlack = ChangeColors.whiteBlackMap.keys
+    val whiteBlackString = ChangeColors.whiteBlackMap.values
+    val leatherColor = ChangeColors.leathersColorMap.keys
+    val leatherColorString = ChangeColors.leathersColorMap.values
+    val buttonColor = ChangeColors.buttonsColorMap.keys
+    val buttonColorString = ChangeColors.buttonsColorMap.values
+    val stringColor = ChangeColors.stringsColorMap.keys
+    val stringColorString = ChangeColors.stringsColorMap.values
 
     private val a1 = ContextCompat.getDrawable(context, R.drawable.a1)
     private val _d1: MutableLiveData<Drawable> =

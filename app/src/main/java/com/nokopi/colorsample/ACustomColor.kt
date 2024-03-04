@@ -55,106 +55,140 @@ class ACustomColor : AppCompatActivity() {
 //
 //        binding.imageView11.setImageResource(R.drawable.a11)
 
-        val customDropDownAdapter1 = CustomSpinnerAdapter(ChangeColors.nbSLBAPogoPlasticsColorSpinner, ChangeColors.nbSLBAPogoPlasticsColorSpinnerString)
+        val customDropDownAdapter1 = CustomSpinnerAdapter(
+            ChangeColors.nbSLBAPogoPlasticsColorMap.map { it.key },
+            ChangeColors.nbSLBAPogoPlasticsColorMap.map { it.value }
+        )
         binding.image1Spinner.adapter = customDropDownAdapter1
-        binding.image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image1Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 Log.i("onItemSelected", "$position")
 //                changeColors.changeNBSLBAPlasticColors(d1, position, binding.imageView)
                 viewModel.updateD1(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val customDropDownAdapter2 = CustomSpinnerAdapter(ChangeColors.whiteBlackSpinner, ChangeColors.whiteBlackSpinnerString)
+        val customDropDownAdapter2 = CustomSpinnerAdapter(
+            ChangeColors.whiteBlackMap.map { it.key },
+            ChangeColors.whiteBlackMap.map { it.value }
+        )
         binding.image2Spinner.adapter = customDropDownAdapter2
-        binding.image2Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image2Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeColorsWhiteOrBlack(d2, position, binding.imageView2)
                 viewModel.updateD2(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val customDropDownAdapter34567 = CustomSpinnerAdapter(ChangeColors.leathersColorSpinner, ChangeColors.leathersColorSpinnerString)
+        val customDropDownAdapter34567 = CustomSpinnerAdapter(
+            ChangeColors.leathersColorMap.map { it.key },
+            ChangeColors.leathersColorMap.map { it.value }
+        )
         binding.image3Spinner.adapter = customDropDownAdapter34567
-        binding.image3Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image3Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeLeatherColors(d3, position, binding.imageView3)
                 viewModel.updateD3(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
         binding.image4Spinner.adapter = customDropDownAdapter34567
-        binding.image4Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image4Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeLeatherColors(d4, position, binding.imageView4)
                 viewModel.updateD4(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
         binding.image5Spinner.adapter = customDropDownAdapter34567
-        binding.image5Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image5Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeLeatherColors(d5, position, binding.imageView5)
                 viewModel.updateD5(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
         binding.image6Spinner.adapter = customDropDownAdapter34567
-        binding.image6Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image6Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeLeatherColors(d6, position, binding.imageView6)
                 viewModel.updateD6(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
         binding.image7Spinner.adapter = customDropDownAdapter34567
-        binding.image7Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image7Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeLeatherColors(d7, position, binding.imageView7)
                 viewModel.updateD7(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val customDropDownAdapter8 = CustomSpinnerAdapter(ChangeColors.whiteBlackSpinner, ChangeColors.whiteBlackSpinnerString)
+        val customDropDownAdapter8 = CustomSpinnerAdapter(
+            ChangeColors.whiteBlackMap.map { it.key },
+            ChangeColors.whiteBlackMap.map { it.value }
+        )
         binding.image8Spinner.adapter = customDropDownAdapter8
-        binding.image8Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image8Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeColorsWhiteOrBlack(d8, position, binding.imageView8)
                 viewModel.updateD8(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val customDropDownAdapter9 = CustomSpinnerAdapter(ChangeColors.buttonsColorSpinner, ChangeColors.buttonsColorSpinnerString)
+        val customDropDownAdapter9 = CustomSpinnerAdapter(
+            ChangeColors.buttonsColorMap.map { it.key },
+            ChangeColors.buttonsColorMap.map { it.value }
+        )
         binding.image9Spinner.adapter = customDropDownAdapter9
-        binding.image9Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        binding.image9Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 //                changeColors.changeButtonColors(d9, position, binding.imageView9)
                 viewModel.updateD9(position)
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val customDropDownAdapter10 = CustomSpinnerAdapter(ChangeColors.stringsColorSpinner, ChangeColors.stringsColorSpinnerString)
+        val customDropDownAdapter10 = CustomSpinnerAdapter(
+            ChangeColors.stringsColorMap.map { it.key },
+            ChangeColors.stringsColorMap.map { it.value }
+        )
         binding.image10Spinner.adapter = customDropDownAdapter10
-        binding.image10Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+        binding.image10Spinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    position: Int,
+                    p3: Long
+                ) {
 //                changeColors.changeStringColors(d10, position, binding.imageView10)
-                viewModel.updateD10(position)
+                    viewModel.updateD10(position)
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) { }
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home){
+        if (item.itemId == android.R.id.home) {
             finish()
         }
         return super.onOptionsItemSelected(item)

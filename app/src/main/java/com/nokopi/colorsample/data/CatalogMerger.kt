@@ -78,7 +78,16 @@ object CatalogMerger {
         val knownPaletteIds = palettes.mapTo(mutableSetOf()) { it.id }
         val userDevices = stored.devices.mapNotNull { it.toDevice(knownPaletteIds) }
 
-        return Catalog(palettes = palettes, devices = builtInDevices + userDevices)
+        // ホームから外した装具は分けて持つ。定義は消さないのでいつでも戻せる。
+        val hiddenDeviceIds = stored.hiddenDevices.mapTo(mutableSetOf()) { DeviceId(it) }
+        val (hiddenDevices, visibleDevices) =
+            (builtInDevices + userDevices).partition { it.id in hiddenDeviceIds }
+
+        return Catalog(
+            palettes = palettes,
+            devices = visibleDevices,
+            hiddenDevices = hiddenDevices,
+        )
     }
 
     /**

@@ -120,6 +120,10 @@
     <string name="delete">削除</string>
     <string name="device_save_failed">装具を保存できませんでした</string>
     <string name="no_user_devices">「装具を追加」から自分の装具を登録できます</string>
+    <string name="hide_device">非表示</string>
+    <string name="hidden_devices">非表示にした装具 %1$d件</string>
+    <string name="hidden_devices_title">非表示にした装具</string>
+    <string name="no_visible_devices">すべての装具を非表示にしています。右上のメニューから戻せます。</string>
 
     <!-- 画像を弾いたときの理由 -->
     <string name="reject_not_transparent_png">透過PNGを選んでください（JPEGなど透明を持たない画像は使えません）</string>

@@ -91,6 +91,11 @@ data class Device(
 data class Catalog(
     val palettes: List<Palette>,
     val devices: List<Device>,
+    /**
+     * ホームから外した装具。組み込みの装具は削除できないので、これで「消した」ことにする。
+     * 戻す操作のために内容ごと持っておく。
+     */
+    val hiddenDevices: List<Device> = emptyList(),
 ) {
     private val paletteById = palettes.associateBy { it.id }
 

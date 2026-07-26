@@ -62,22 +62,32 @@ import com.nokopi.colorsample.ui.device.rememberPartPainter
 fun HomeScreen(
     versionName: String,
     devices: List<Device>,
+    hiddenDevices: List<Device>,
     onSelectDevice: (DeviceId) -> Unit,
     onAddDevice: () -> Unit,
     onEditDevice: (DeviceId) -> Unit,
     onDeleteDevice: (DeviceId) -> Unit,
+    onHideDevice: (DeviceId) -> Unit,
+    onUnhideDevice: (DeviceId) -> Unit,
     onManageColors: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var pendingDelete by remember { mutableStateOf<Device?>(null) }
+    var showHidden by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
-                actions = { HomeOverflowMenu(onManageColors = onManageColors) },
+                actions = {
+                    HomeOverflowMenu(
+                        hiddenCount = hiddenDevices.size,
+                        onManageColors = onManageColors,
+                        onShowHidden = { showHidden = true },
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -114,11 +124,18 @@ fun HomeScreen(
                     onClick = { onSelectDevice(device.id) },
                     onEdit = { onEditDevice(device.id) },
                     onDelete = { pendingDelete = device },
+                    onHide = { onHideDevice(device.id) },
                 )
             }
-            if (devices.none { !it.isBuiltIn }) {
+            // 全部非表示にすると一覧が空になる。戻し方に辿れるよう案内を出す。
+            val emptyMessage = when {
+                devices.isEmpty() -> R.string.no_visible_devices
+                devices.none { !it.isBuiltIn } -> R.string.no_user_devices
+                else -> null
+            }
+            emptyMessage?.let {
                 Text(
-                    text = stringResource(R.string.no_user_devices),
+                    text = stringResource(it),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -128,6 +145,14 @@ fun HomeScreen(
             // 最後のカードが隠れないぶんだけ空けておく。
             Spacer(modifier = Modifier.height(FAB_CLEARANCE))
         }
+    }
+
+    if (showHidden && hiddenDevices.isNotEmpty()) {
+        HiddenDevicesDialog(
+            hidden = hiddenDevices,
+            onUnhide = onUnhideDevice,
+            onDismiss = { showHidden = false },
+        )
     }
 
     pendingDelete?.let { device ->
@@ -192,7 +217,11 @@ private fun HomeFooter(
 }
 
 @Composable
-private fun HomeOverflowMenu(onManageColors: () -> Unit) {
+private fun HomeOverflowMenu(
+    hiddenCount: Int,
+    onManageColors: () -> Unit,
+    onShowHidden: () -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
 
     IconButton(onClick = { expanded = true }) {
@@ -209,6 +238,16 @@ private fun HomeOverflowMenu(onManageColors: () -> Unit) {
                 onManageColors()
             },
         )
+        // 全部隠しても戻せるように、ここからは常に辿れるようにしておく。
+        if (hiddenCount > 0) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.hidden_devices, hiddenCount)) },
+                onClick = {
+                    expanded = false
+                    onShowHidden()
+                },
+            )
+        }
     }
 }
 
@@ -219,6 +258,7 @@ private fun DeviceCard(
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
+    onHide: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
@@ -234,8 +274,8 @@ private fun DeviceCard(
             modifier = Modifier
                 .combinedClickable(
                     onClick = onClick,
-                    // 組み込みは編集も削除もできないので長押しにも反応させない。
-                    onLongClick = if (device.isBuiltIn) null else { { menuExpanded = true } },
+                    // 組み込みも非表示にはできるので、長押しはどの装具でも受ける。
+                    onLongClick = { menuExpanded = true },
                 )
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -253,18 +293,27 @@ private fun DeviceCard(
                 modifier = Modifier.weight(1f),
             )
 
-            if (!device.isBuiltIn) {
-                Box {
-                    IconButton(onClick = { menuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(R.string.more_options),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false },
-                    ) {
+            Box {
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.more_options),
+                    )
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                ) {
+                    // 非表示はどの装具にもできる。組み込みは定義を消せないのでこれが「消す」操作。
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.hide_device)) },
+                        onClick = {
+                            menuExpanded = false
+                            onHide()
+                        },
+                    )
+                    // 編集と削除はユーザーが作った装具だけ。
+                    if (!device.isBuiltIn) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.edit_device)) },
                             onClick = {
@@ -284,4 +333,49 @@ private fun DeviceCard(
             }
         }
     }
+}
+
+/** ホームから外した装具の一覧。ここから1件ずつ戻す。 */
+@Composable
+private fun HiddenDevicesDialog(
+    hidden: List<Device>,
+    onUnhide: (DeviceId) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.hidden_devices_title)) },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                hidden.forEach { device ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Image(
+                            painter = rememberPartPainter(device.thumbnail),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(40.dp),
+                        )
+                        Text(
+                            text = device.label.resolve(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = { onUnhide(device.id) }) {
+                            Text(stringResource(R.string.restore_hidden_colors))
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.ok)) }
+        },
+    )
 }

@@ -22,6 +22,11 @@ data class StoredCatalog(
     val paletteNames: Map<String, String> = emptyMap(),
     /** 一覧から外した色。組み込みの色を「消す」のはこれで表す。 */
     val hiddenColors: List<HiddenColor> = emptyList(),
+    /**
+     * ホームから外した装具のID。組み込みの装具を「消す」のはこれで表す。
+     * 色と同じく定義は残るのでいつでも戻せる。
+     */
+    val hiddenDevices: List<String> = emptyList(),
 ) {
     companion object {
         const val CURRENT_VERSION = 1

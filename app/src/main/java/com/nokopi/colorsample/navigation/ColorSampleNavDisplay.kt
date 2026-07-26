@@ -54,15 +54,18 @@ fun ColorSampleNavDisplay(
             entry<HomeKey> {
                 val homeViewModel: HomeViewModel =
                     viewModel(factory = factory { HomeViewModel(repository) })
-                val devices by homeViewModel.devices.collectAsStateWithLifecycle()
+                val state by homeViewModel.uiState.collectAsStateWithLifecycle()
 
                 HomeScreen(
                     versionName = versionName,
-                    devices = devices,
+                    devices = state.devices,
+                    hiddenDevices = state.hiddenDevices,
                     onSelectDevice = { backStack.add(DeviceKey(it.value)) },
                     onAddDevice = { backStack.add(DeviceEditorKey()) },
                     onEditDevice = { backStack.add(DeviceEditorKey(it.value)) },
                     onDeleteDevice = homeViewModel::deleteDevice,
+                    onHideDevice = homeViewModel::hideDevice,
+                    onUnhideDevice = homeViewModel::unhideDevice,
                     onManageColors = { backStack.add(ManageColorsKey()) },
                     onOpenPrivacyPolicy = onOpenPrivacyPolicy,
                 )

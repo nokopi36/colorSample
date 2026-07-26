@@ -294,9 +294,37 @@ class CatalogRepository(
     /** 組み込みの装具は削除できない。画像のディレクトリごと消す。 */
     suspend fun deleteDevice(id: DeviceId) {
         if (id.isBuiltIn) return
-        store.update { it.copy(devices = it.devices.filterNot { device -> device.id == id.value }) }
+        store.update { stored ->
+            stored.copy(
+                devices = stored.devices.filterNot { it.id == id.value },
+                // 消えた装具への非表示指定は残しても意味がない。
+                hiddenDevices = stored.hiddenDevices.filterNot { it == id.value },
+            )
+        }
         withContext(Dispatchers.IO) {
             DeviceFiles.directory(context, id.value).deleteRecursively()
+        }
+    }
+
+    /**
+     * 装具をホームから外す。
+     *
+     * 組み込みの装具はコード上の定義を消せないので、「消す」のはこれで表す。
+     * 定義は残るのでいつでも戻せるし、アプリを更新しても壊れない。
+     */
+    suspend fun hideDevice(id: DeviceId) {
+        store.update { stored ->
+            if (stored.hiddenDevices.contains(id.value)) {
+                stored
+            } else {
+                stored.copy(hiddenDevices = stored.hiddenDevices + id.value)
+            }
+        }
+    }
+
+    suspend fun unhideDevice(id: DeviceId) {
+        store.update { stored ->
+            stored.copy(hiddenDevices = stored.hiddenDevices.filterNot { it == id.value })
         }
     }
 

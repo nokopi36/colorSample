@@ -74,6 +74,19 @@ class BuiltInCatalogTest {
     }
 
     @Test
+    fun `どのパレットも1色以上ある`() {
+        // Palette の init が守っている不変条件。組み込み定義側でも成り立つこと。
+        for (palette in BuiltInCatalog.palettes) {
+            assertTrue("${palette.id.value} が空", palette.options.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `組み込みパレットはユーザー定義ではない`() {
+        assertTrue(BuiltInCatalog.palettes.none { it.isUserDefined })
+    }
+
+    @Test
     fun `装具ごとのパーツ定義が移行前と一致する`() {
         // (ラベル, 画像, パレット) を装具ごとに並べたもの。
         val expected = mapOf(

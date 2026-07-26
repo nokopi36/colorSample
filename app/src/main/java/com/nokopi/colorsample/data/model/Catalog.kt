@@ -18,13 +18,33 @@ data class ColorOption(
     val isBuiltIn: Boolean get() = id.isBuiltIn
 }
 
-/** パーツの素材ごとの色の一覧。組み込みの色にユーザーの色を足したもの。 */
+/**
+ * パーツの素材ごとの色の一覧。組み込みの色にユーザーの色を足し、非表示にしたものを除いたもの。
+ *
+ * **必ず1色以上ある。** 空を許すと [optionOrFirst] が落ちるため、
+ * 作成時（最初の色を必須にする）・削除時（最後の1色は消せない）・
+ * 読み込み時（空になる非表示指定は無視する）の3か所で守っている。
+ */
 @Immutable
 data class Palette(
     val id: PaletteId,
     val label: DisplayText,
     val options: List<ColorOption>,
+    /**
+     * このグループで一覧から外した色。
+     *
+     * 保存側の指定件数ではなく**実際に効いた**ぶんが入る。全部消えてしまう指定は
+     * マージ側で無視されるので、そちらを数えると「戻す」の表示が実態とずれる。
+     */
+    val hiddenOptions: List<ColorOption> = emptyList(),
 ) {
+    init {
+        require(options.isNotEmpty()) { "色が0件のグループは作れません: ${id.value}" }
+    }
+
+    /** ユーザーが作ったグループだけ削除・名前変更ができる。 */
+    val isUserDefined: Boolean get() = id.isUserDefined
+
     fun optionOrFirst(colorId: ColorId?): ColorOption =
         options.firstOrNull { it.id == colorId } ?: options.first()
 }
@@ -79,4 +99,19 @@ data class Catalog(
     }
 
     fun device(id: DeviceId): Device? = devices.firstOrNull { it.id == id }
+
+    /**
+     * そのグループを使っている装具とパーツ。
+     *
+     * グループを削除してよいかの判定と、拒否したときに「どれが使っているか」を
+     * 伝えるために使う。空なら誰も使っていない。
+     */
+    fun usages(paletteId: PaletteId): List<PaletteUsage> = devices.flatMap { device ->
+        device.parts.filter { it.paletteId == paletteId }
+            .map { PaletteUsage(device = device, part = it) }
+    }
 }
+
+/** [Catalog.usages] の結果。 */
+@Immutable
+data class PaletteUsage(val device: Device, val part: PartSpec)

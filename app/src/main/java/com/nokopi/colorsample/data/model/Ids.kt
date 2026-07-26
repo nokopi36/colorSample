@@ -23,9 +23,18 @@ value class ColorId(val value: String) {
     val isBuiltIn: Boolean get() = value.startsWith(BUILT_IN_PREFIX)
 }
 
+/**
+ * 色グループの識別子。
+ *
+ * 組み込みのグループは `leather` のように接頭辞を持たない。すでに出回っている保存データ
+ * （装具のパーツ）がこの ID を参照しているため変えられないので、判定は
+ * 「ユーザー定義かどうか」の向きで行う。色や装具の [ColorId.isBuiltIn] とは逆になる。
+ */
 @Serializable
 @JvmInline
-value class PaletteId(val value: String)
+value class PaletteId(val value: String) {
+    val isUserDefined: Boolean get() = value.startsWith(USER_PREFIX)
+}
 
 @Serializable
 @JvmInline

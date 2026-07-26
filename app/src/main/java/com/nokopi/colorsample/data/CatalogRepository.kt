@@ -10,7 +10,9 @@ import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.data.model.PartId
 import com.nokopi.colorsample.data.model.userId
 import com.nokopi.colorsample.data.store.CatalogStore
+import com.nokopi.colorsample.data.store.HiddenColor
 import com.nokopi.colorsample.data.store.StoredColor
+import com.nokopi.colorsample.data.store.StoredPalette
 import com.nokopi.colorsample.data.store.StoredDevice
 import com.nokopi.colorsample.data.store.StoredPart
 import kotlinx.coroutines.Dispatchers
@@ -78,7 +80,7 @@ class CatalogRepository(
     }
 
     /**
-     * 組み込みの色は削除できない。
+     * 組み込みの色は削除できない。そのグループで最後の1色になる場合も削除しない。
      *
      * @return 消した内容。[restoreColor] に渡せば元に戻せる。消さなかった場合は null。
      */
@@ -86,11 +88,122 @@ class CatalogRepository(
         if (id.isBuiltIn) return null
         val removed = store.catalog.first().colors.firstOrNull { it.id == id.value }
             ?: return null
+        // グループを空にしてしまう削除は認めない。空のグループは表示も操作もできない。
+        if (isLastColorIn(PaletteId(removed.paletteId))) return null
+
         store.update { stored ->
             stored.copy(colors = stored.colors.filterNot { it.id == id.value })
         }
         return removed
     }
+
+    // ---- 色の非表示 ----------------------------------------------------
+
+    /**
+     * 色を一覧から外す。組み込みの色を「消す」のはこれ。
+     *
+     * グループ単位なので、革の白を外してもボタンの白は残る。
+     *
+     * @return 外したら true。そのグループで最後の1色なら何もせず false。
+     */
+    suspend fun hideColor(paletteId: PaletteId, colorId: ColorId): Boolean {
+        if (isLastColorIn(paletteId)) return false
+        val entry = HiddenColor(paletteId = paletteId.value, colorId = colorId.value)
+        store.update { stored ->
+            if (stored.hiddenColors.contains(entry)) {
+                stored
+            } else {
+                stored.copy(hiddenColors = stored.hiddenColors + entry)
+            }
+        }
+        return true
+    }
+
+    suspend fun unhideColor(paletteId: PaletteId, colorId: ColorId) {
+        val entry = HiddenColor(paletteId = paletteId.value, colorId = colorId.value)
+        store.update { stored ->
+            stored.copy(hiddenColors = stored.hiddenColors.filterNot { it == entry })
+        }
+    }
+
+    /** そのグループで非表示にした色をまとめて戻す。 */
+    suspend fun unhideAll(paletteId: PaletteId) {
+        store.update { stored ->
+            stored.copy(
+                hiddenColors = stored.hiddenColors.filterNot { it.paletteId == paletteId.value },
+            )
+        }
+    }
+
+    // ---- 色グループ ----------------------------------------------------
+
+    /**
+     * 色グループを作る。
+     *
+     * 最初の色を必ず一緒に入れるのは、色が0件のグループを存在させないため。
+     * 空のグループは [com.nokopi.colorsample.data.model.Palette] が受け付けない。
+     */
+    suspend fun addPalette(name: String, firstColorName: String, firstColor: Color): PaletteId {
+        val id = PaletteId(userId(UUID.randomUUID().toString()))
+        val first = StoredColor(
+            id = userId(UUID.randomUUID().toString()),
+            paletteId = id.value,
+            name = firstColorName.trim(),
+            argb = firstColor.toArgb(),
+        )
+        store.update { stored ->
+            stored.copy(
+                palettes = stored.palettes + StoredPalette(id = id.value, name = name.trim()),
+                colors = stored.colors + first,
+            )
+        }
+        return id
+    }
+
+    /** 組み込みのグループも名前だけは変えられる。改名は上書きとして別に持つ。 */
+    suspend fun renamePalette(id: PaletteId, name: String) {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) return
+        store.update { stored ->
+            if (id.isUserDefined) {
+                stored.copy(
+                    palettes = stored.palettes.map {
+                        if (it.id == id.value) it.copy(name = trimmed) else it
+                    },
+                )
+            } else {
+                stored.copy(paletteNames = stored.paletteNames + (id.value to trimmed))
+            }
+        }
+    }
+
+    /**
+     * 色グループを削除する。
+     *
+     * 組み込みのグループは削除できない（組み込み装具が参照している）。
+     * 使用中のグループも削除しない。黙って消すと装具のレイヤーが消えてしまうため、
+     * 呼ぶ側で [Catalog.usages] を見て理由を出すこと。ここの判定は二重の防波堤。
+     *
+     * @return 削除したら true。
+     */
+    suspend fun deletePalette(id: PaletteId): Boolean {
+        if (!id.isUserDefined) return false
+        if (catalog.first().usages(id).isNotEmpty()) return false
+
+        store.update { stored ->
+            stored.copy(
+                palettes = stored.palettes.filterNot { it.id == id.value },
+                // 参照先が無くなる色と非表示指定も一緒に片付ける。
+                colors = stored.colors.filterNot { it.paletteId == id.value },
+                hiddenColors = stored.hiddenColors.filterNot { it.paletteId == id.value },
+            )
+        }
+        return true
+    }
+
+    /** そのグループに見えている色が1つだけか。これ以上減らせない状態。 */
+    private suspend fun isLastColorIn(paletteId: PaletteId): Boolean =
+        (catalog.first().palettes.firstOrNull { it.id == paletteId }?.options?.size ?: 0) <= 1
 
     /** [deleteColor] の取り消し。同じ ID で戻すので、配色からの参照も復活する。 */
     suspend fun restoreColor(color: StoredColor) {

@@ -77,6 +77,26 @@
     <string name="hex_color_hint">例 #F5B2B2</string>
     <string name="hex_color_invalid">#RRGGBB の形で入力してください</string>
 
+    <!-- 色グループ -->
+    <string name="add_palette">グループを追加</string>
+    <string name="rename_palette">名前を変更</string>
+    <string name="delete_palette">グループを削除</string>
+    <string name="palette_name">グループの名前</string>
+    <string name="palette_name_required">名前を入力してください</string>
+    <string name="palette_name_hint">素材の区分名を入れてください（例: マジックテープ）</string>
+    <string name="first_color_of">「%1$s」の最初の色</string>
+    <string name="next">次へ</string>
+    <string name="ok">OK</string>
+    <string name="palette_in_use_title">「%1$s」は削除できません</string>
+    <string name="palette_in_use_message">以下の装具がこのグループを使っています。先に装具側の割り当てを変えてください。</string>
+    <string name="palette_in_use_entry">・%1$s（%2$s）</string>
+
+    <!-- 組み込み色の非表示 -->
+    <string name="hide_color">非表示</string>
+    <string name="color_hidden">「%1$s」を非表示にしました</string>
+    <string name="hidden_colors_count">非表示にした色 %1$d件</string>
+    <string name="restore_hidden_colors">戻す</string>
+
     <!-- 装具の追加・編集 -->
     <string name="add_device">装具を追加</string>
     <string name="edit_device">装具を編集</string>

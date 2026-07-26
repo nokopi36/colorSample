@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- ImageExport が共有用 PNG を書き出す場所 (cacheDir/OColorDesign) -->
+    <cache-path name="shared_images" path="OColorDesign/" />
+</paths>

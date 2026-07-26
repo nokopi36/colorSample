@@ -20,3 +20,8 @@ local.properties
 
 # 誤って作られがちなもの
 node_modules
+
+# リリース署名の鍵とパスワード。絶対にコミットしない
+keystore.properties
+*.jks
+*.keystore

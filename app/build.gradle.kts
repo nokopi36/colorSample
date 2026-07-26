@@ -1,9 +1,27 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
+
+/**
+ * リリース署名の設定。
+ *
+ * リポジトリに鍵やパスワードを置かないため、プロジェクト直下の `keystore.properties`
+ * （gitignore 済み）から読む。書き方は `keystore.properties.template` を参照。
+ *
+ * このファイルが無い環境ではあえて署名を付けず、未署名のまま release ビルドを通す。
+ * クローン直後や CI でも `assembleRelease` / `bundleRelease` が動くようにするため。
+ * ストアへ上げるものは必ず署名が必要なので、下の `hasReleaseSigning` で判別できる。
+ */
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties: Properties? = keystorePropertiesFile.takeIf { it.exists() }?.let { file ->
+    Properties().apply { file.inputStream().use(::load) }
+}
+val hasReleaseSigning = keystoreProperties != null
 
 android {
     namespace = "com.nokopi.colorsample"
@@ -18,8 +36,28 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        if (keystoreProperties != null) {
+            create("release") {
+                fun required(key: String): String = requireNotNull(
+                    keystoreProperties.getProperty(key)?.takeIf { it.isNotBlank() },
+                ) { "keystore.properties に $key がありません" }
+
+                storeFile = rootProject.file(required("storeFile")).also {
+                    // ここで気づかないと、署名タスクまで進んでから分かりにくい形で失敗する。
+                    require(it.isFile) { "keystore が見つかりません: ${it.absolutePath}" }
+                }
+                storePassword = required("storePassword")
+                keyAlias = required("keyAlias")
+                keyPassword = required("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // keystore.properties が無ければ null。その場合は未署名で出る。
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

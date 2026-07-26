@@ -66,6 +66,18 @@
 依存とバージョンは `gradle/libs.versions.toml` に集約しています。**バージョンの正はここだけ**なので、
 このファイルを見てください。バージョンを上げる際の制約は `CLAUDE.md` に書いてあります。
 
+### ストアに出す（署名済み AAB）
+
+```bash
+cp keystore.properties.template keystore.properties   # 初回だけ。中身を埋める
+./gradlew bundleRelease
+# → app/build/outputs/bundle/release/app-release.aab
+```
+
+`keystore.properties` は gitignore 済みで、鍵とパスワードはリポジトリに入りません。
+このファイルが無い環境では**未署名**で出力されます（ビルドは失敗しません）。
+ストアに上げるものは署名が必要なので、初回は必ず用意してください。
+
 ## 技術スタック
 
 - **Kotlin** / **Jetpack Compose** + Material3（XML レイアウトと DataBinding は使っていません）

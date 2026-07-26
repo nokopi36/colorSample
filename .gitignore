@@ -14,3 +14,9 @@
 .cxx
 local.properties
 .idea
+
+# ビルド成果物
+/app/release
+
+# 誤って作られがちなもの
+node_modules

@@ -53,26 +53,31 @@ object CatalogMerger {
     }
 
     private fun StoredDevice.toDevice(knownPaletteIds: Set<PaletteId>): Device? {
-        val usableParts = parts.filter { PaletteId(it.paletteId) in knownPaletteIds }
-        // パーツが1つも残らなかった装具は表示しても操作できないので出さない。
-        val firstPart = usableParts.firstOrNull() ?: return null
+        // 色を変えないレイヤー (paletteId == null) はそのまま通す。
+        // 色を変える指定なのにパレットが解決できないものだけ落とす。
+        val usableParts = parts.filter {
+            it.paletteId == null || PaletteId(it.paletteId) in knownPaletteIds
+        }
+        if (usableParts.isEmpty()) return null
 
         fun image(fileName: String) = PartImage.Stored(DeviceFiles.relativePath(id, fileName))
+
+        val specs = usableParts.map { part ->
+            PartSpec(
+                id = PartId(part.id),
+                label = DisplayText.Literal(part.name),
+                image = image(part.fileName),
+                paletteId = part.paletteId?.let(::PaletteId),
+            )
+        }
 
         return Device(
             id = DeviceId(id),
             label = DisplayText.Literal(name),
-            // サムネイルは線画があればそれ、無ければ最背面のパーツ。
-            thumbnail = image(overlayFileName ?: firstPart.fileName),
-            parts = usableParts.map { part ->
-                PartSpec(
-                    id = PartId(part.id),
-                    label = DisplayText.Literal(part.name),
-                    image = image(part.fileName),
-                    paletteId = PaletteId(part.paletteId),
-                )
-            },
-            overlay = overlayFileName?.let(::image),
+            // サムネイルは一番手前の「色を変えない」層（＝線画）を優先し、
+            // 無ければ一番手前のレイヤーを使う。
+            thumbnail = (specs.lastOrNull { !it.isTinted } ?: specs.last()).image,
+            parts = specs,
         )
     }
 }

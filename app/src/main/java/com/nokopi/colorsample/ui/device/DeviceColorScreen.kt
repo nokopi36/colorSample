@@ -197,8 +197,7 @@ private fun DeviceColorContent(
             val preview: @Composable (Modifier) -> Unit = { previewModifier ->
                 ColorPreview(
                     deviceLabel = deviceLabel,
-                    parts = state.parts,
-                    overlay = state.device.overlay,
+                    layers = state.layers,
                     personName = state.personName,
                     graphicsLayer = graphicsLayer,
                     modifier = previewModifier,
@@ -220,9 +219,9 @@ private fun DeviceColorContent(
                     )
 
                     ColorPickerGrid(
-                        parts = state.parts,
+                        parts = state.selections,
                         onSelect = viewModel::selectColor,
-                        onAddColor = { onAddColor(it.part.paletteId) },
+                        onAddColor = { onAddColor(it.palette.id) },
                         columns = columns,
                         modifier = Modifier.fillMaxWidth(),
                     )

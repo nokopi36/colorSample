@@ -2,6 +2,7 @@ package com.nokopi.colorsample.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
@@ -18,10 +19,13 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.nokopi.colorsample.data.CatalogRepository
+import com.nokopi.colorsample.data.ImageImporter
 import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.ui.device.DeviceColorScreen
 import com.nokopi.colorsample.ui.device.DeviceColorViewModel
+import com.nokopi.colorsample.ui.deviceeditor.DeviceEditorScreen
+import com.nokopi.colorsample.ui.deviceeditor.DeviceEditorViewModel
 import com.nokopi.colorsample.ui.home.HomeScreen
 import com.nokopi.colorsample.ui.home.HomeViewModel
 import com.nokopi.colorsample.ui.palette.ManageColorsScreen
@@ -34,7 +38,8 @@ fun ColorSampleNavDisplay(
     modifier: Modifier = Modifier,
     backStack: NavBackStack<NavKey> = rememberNavBackStack(HomeKey),
 ) {
-    val repository = CatalogRepository.get(LocalContext.current)
+    val context = LocalContext.current
+    val repository = CatalogRepository.get(context)
 
     NavDisplay(
         backStack = backStack,
@@ -55,6 +60,9 @@ fun ColorSampleNavDisplay(
                     versionName = versionName,
                     devices = devices,
                     onSelectDevice = { backStack.add(DeviceKey(it.value)) },
+                    onAddDevice = { backStack.add(DeviceEditorKey()) },
+                    onEditDevice = { backStack.add(DeviceEditorKey(it.value)) },
+                    onDeleteDevice = homeViewModel::deleteDevice,
                     onManageColors = { backStack.add(ManageColorsKey()) },
                     onOpenPrivacyPolicy = onOpenPrivacyPolicy,
                 )
@@ -83,6 +91,22 @@ fun ColorSampleNavDisplay(
                     onNavigateUp = { backStack.removeLastOrNull() },
                     focusPaletteId = key.focusPaletteId?.let(::PaletteId),
                     viewModel = viewModel(factory = factory { ManageColorsViewModel(repository) }),
+                )
+            }
+
+            entry<DeviceEditorKey> { key ->
+                val importer = remember(context) { ImageImporter(context) }
+                DeviceEditorScreen(
+                    onNavigateUp = { backStack.removeLastOrNull() },
+                    viewModel = viewModel(
+                        factory = factory {
+                            DeviceEditorViewModel(
+                                deviceId = key.deviceId?.let(::DeviceId),
+                                repository = repository,
+                                importer = importer,
+                            )
+                        },
+                    ),
                 )
             }
         },

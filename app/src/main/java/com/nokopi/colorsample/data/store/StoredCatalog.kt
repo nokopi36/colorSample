@@ -40,21 +40,22 @@ data class StoredColor(
 /**
  * ユーザーが作った装具。画像そのものは `filesDir/devices/<id>/` に置き、ここには名前だけ持つ。
  *
- * Phase 2 で使う。Phase 1 の時点では常に空。
+ * @property parts 描画順（先頭が最背面）。色を変えないレイヤーもここに含まれる。
  */
 @Serializable
 data class StoredDevice(
     val id: String,
     val name: String,
     val parts: List<StoredPart> = emptyList(),
-    /** tint しない最前面レイヤーのファイル名。無くてもよい。 */
-    val overlayFileName: String? = null,
 )
 
+/**
+ * @property paletteId 選べる色。null なら色を変えないレイヤー。
+ */
 @Serializable
 data class StoredPart(
     val id: String,
     val name: String,
     val fileName: String,
-    val paletteId: String,
+    val paletteId: String? = null,
 )

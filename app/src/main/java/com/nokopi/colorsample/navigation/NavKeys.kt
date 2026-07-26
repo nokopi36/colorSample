@@ -22,3 +22,11 @@ data class DeviceKey(val deviceId: String) : NavKey
  */
 @Serializable
 data class ManageColorsKey(val focusPaletteId: String? = null) : NavKey
+
+/**
+ * 装具の作成・編集。
+ *
+ * @property deviceId 編集する装具。null なら新規作成。
+ */
+@Serializable
+data class DeviceEditorKey(val deviceId: String? = null) : NavKey

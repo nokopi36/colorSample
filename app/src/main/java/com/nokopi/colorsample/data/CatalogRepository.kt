@@ -5,19 +5,49 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.nokopi.colorsample.data.model.Catalog
 import com.nokopi.colorsample.data.model.ColorId
+import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.model.PaletteId
+import com.nokopi.colorsample.data.model.PartId
 import com.nokopi.colorsample.data.model.userId
 import com.nokopi.colorsample.data.store.CatalogStore
 import com.nokopi.colorsample.data.store.StoredColor
+import com.nokopi.colorsample.data.store.StoredDevice
+import com.nokopi.colorsample.data.store.StoredPart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.UUID
 
 /**
- * 画面が見るカタログの入り口。組み込み定義とユーザー定義をマージして流す。
+ * 保存する装具1件ぶん。ファイルは保存の時点で staging に置かれている前提。
  */
-class CatalogRepository(private val store: CatalogStore) {
+data class DeviceSave(
+    val id: DeviceId,
+    val name: String,
+    /** 描画順（先頭が最背面）。色を変えないレイヤーもここに含める。 */
+    val parts: List<PartSave>,
+)
+
+data class PartSave(
+    val id: PartId,
+    val name: String,
+    val fileName: String,
+    /** null なら色を変えないレイヤー。 */
+    val paletteId: PaletteId?,
+)
+
+/**
+ * 画面が見るカタログの入り口。組み込み定義とユーザー定義をマージして流す。
+ *
+ * 装具の画像はファイルなので、[Context] を持ってファイルの移動と削除も引き受ける。
+ */
+class CatalogRepository(
+    private val store: CatalogStore,
+    private val context: Context,
+) {
 
     val catalog: Flow<Catalog> = store.catalog.map { CatalogMerger.merge(it) }
 
@@ -73,6 +103,90 @@ class CatalogRepository(private val store: CatalogStore) {
         }
     }
 
+    // ---- 装具 ----------------------------------------------------------
+
+    fun newDeviceId(): DeviceId = DeviceId(userId(UUID.randomUUID().toString()))
+
+    fun newPartId(): PartId = PartId(userId(UUID.randomUUID().toString()))
+
+    /** 編集中の画像を置く場所。取り込みはここへ書き、保存で装具のディレクトリへ移す。 */
+    fun stagingDirectory(): File = DeviceFiles.stagingDirectory(context)
+
+    /** 編集を始めるとき・やめるときに呼ぶ。前回の編集の残りもここで消える。 */
+    suspend fun clearStaging() = withContext(Dispatchers.IO) {
+        DeviceFiles.stagingDirectory(context).deleteRecursively()
+        Unit
+    }
+
+    /**
+     * 既存の装具を編集するために、その画像を staging へ写す。
+     * 保存も取り消しも staging だけを見ればよくなるので、途中でやめても元の装具は無傷。
+     */
+    suspend fun copyImagesToStaging(deviceId: DeviceId): Unit = withContext(Dispatchers.IO) {
+        val source = DeviceFiles.directory(context, deviceId.value)
+        if (!source.isDirectory) return@withContext
+        val staging = DeviceFiles.stagingDirectory(context).apply { mkdirs() }
+        source.listFiles()?.forEach { file ->
+            if (file.isFile) file.copyTo(File(staging, file.name), overwrite = true)
+        }
+    }
+
+    /**
+     * 装具を保存する。新規でも上書きでも同じ経路を通る。
+     *
+     * 参照されているファイルを staging から装具のディレクトリへ移し、参照されなくなった
+     * ファイルは残さない。
+     */
+    suspend fun saveDevice(save: DeviceSave) {
+        withContext(Dispatchers.IO) {
+            val staging = DeviceFiles.stagingDirectory(context)
+            val target = DeviceFiles.directory(context, save.id.value)
+
+            // 上書き保存のとき、前の画像を残さないよう作り直す。
+            target.deleteRecursively()
+            check(target.mkdirs()) { "保存先を作成できませんでした: $target" }
+
+            for (fileName in save.parts.map { it.fileName }.distinct()) {
+                val from = File(staging, fileName)
+                check(from.isFile) { "編集中の画像が見つかりません: $fileName" }
+                check(from.renameTo(File(target, fileName))) {
+                    "画像を保存先へ移動できませんでした: $fileName"
+                }
+            }
+        }
+
+        val stored = StoredDevice(
+            id = save.id.value,
+            name = save.name.trim(),
+            parts = save.parts.map {
+                StoredPart(
+                    id = it.id.value,
+                    name = it.name.trim(),
+                    fileName = it.fileName,
+                    paletteId = it.paletteId?.value,
+                )
+            },
+        )
+        store.update { catalog ->
+            val others = catalog.devices.filterNot { it.id == stored.id }
+            // 既存を編集した場合も並びが飛ばないよう、元の位置に戻す。
+            val index = catalog.devices.indexOfFirst { it.id == stored.id }
+            val devices = others.toMutableList()
+            devices.add(if (index >= 0) index.coerceAtMost(devices.size) else devices.size, stored)
+            catalog.copy(devices = devices)
+        }
+        clearStaging()
+    }
+
+    /** 組み込みの装具は削除できない。画像のディレクトリごと消す。 */
+    suspend fun deleteDevice(id: DeviceId) {
+        if (id.isBuiltIn) return
+        store.update { it.copy(devices = it.devices.filterNot { device -> device.id == id.value }) }
+        withContext(Dispatchers.IO) {
+            DeviceFiles.directory(context, id.value).deleteRecursively()
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: CatalogRepository? = null
@@ -83,9 +197,10 @@ class CatalogRepository(private val store: CatalogStore) {
          */
         fun get(context: Context): CatalogRepository =
             instance ?: synchronized(this) {
-                instance ?: CatalogRepository(
-                    CatalogStore.create(context.applicationContext),
-                ).also { instance = it }
+                instance ?: run {
+                    val app = context.applicationContext
+                    CatalogRepository(CatalogStore.create(app), app).also { instance = it }
+                }
             }
     }
 }

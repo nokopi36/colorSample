@@ -86,6 +86,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.felt, R.drawable.nb6, BuiltInCatalog.whiteBlackId),
                 Triple(R.string.string, R.drawable.nb7, BuiltInCatalog.stringId),
                 Triple(R.string.button, R.drawable.nb8, BuiltInCatalog.buttonId),
+                Triple(R.string.line_art, R.drawable.nb9, null),
             ),
             "builtin:ftn" to listOf(
                 Triple(R.string.body, R.drawable.ftn1, BuiltInCatalog.leatherId),
@@ -97,6 +98,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.shoe_sole, R.drawable.ftn7, BuiltInCatalog.whiteBlackId),
                 Triple(R.string.button, R.drawable.ftn8, BuiltInCatalog.buttonId),
                 Triple(R.string.string, R.drawable.ftn9, BuiltInCatalog.stringId),
+                Triple(R.string.line_art, R.drawable.ftn10, null),
             ),
             "builtin:slb" to listOf(
                 Triple(R.string.plastic, R.drawable.slb1, BuiltInCatalog.orthosisPlasticId),
@@ -108,6 +110,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.shoe_sole, R.drawable.slb7, BuiltInCatalog.whiteBlackId),
                 Triple(R.string.string, R.drawable.slb8, BuiltInCatalog.stringId),
                 Triple(R.string.button, R.drawable.slb9, BuiltInCatalog.buttonId),
+                Triple(R.string.line_art, R.drawable.slb10, null),
             ),
             "builtin:pl" to listOf(
                 Triple(R.string.kan, R.drawable.pl5, BuiltInCatalog.whiteBlackId),
@@ -115,6 +118,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.belt, R.drawable.pl3, BuiltInCatalog.bandId),
                 Triple(R.string.button, R.drawable.pl4, BuiltInCatalog.buttonId),
                 Triple(R.string.plastic, R.drawable.pl1, BuiltInCatalog.plasticId),
+                Triple(R.string.line_art, R.drawable.pl6, null),
             ),
             "builtin:pogo" to listOf(
                 Triple(R.string.plastic, R.drawable.pogo1, BuiltInCatalog.orthosisPlasticId),
@@ -127,6 +131,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.belt4, R.drawable.pogo6, BuiltInCatalog.leatherId),
                 Triple(R.string.button, R.drawable.pogo7, BuiltInCatalog.buttonId),
                 Triple(R.string.string, R.drawable.pogo8, BuiltInCatalog.stringId),
+                Triple(R.string.line_art, R.drawable.pogo9, null),
             ),
             "builtin:a" to listOf(
                 Triple(R.string.plastic, R.drawable.a1, BuiltInCatalog.orthosisPlasticId),
@@ -139,6 +144,7 @@ class BuiltInCatalogTest {
                 Triple(R.string.felt, R.drawable.a8, BuiltInCatalog.whiteBlackId),
                 Triple(R.string.button, R.drawable.a9, BuiltInCatalog.buttonId),
                 Triple(R.string.string, R.drawable.a10, BuiltInCatalog.stringId),
+                Triple(R.string.line_art, R.drawable.a11, null),
             ),
         )
 
@@ -157,30 +163,37 @@ class BuiltInCatalogTest {
     }
 
     @Test
-    fun `装具ごとの最前面レイヤーが移行前と一致する`() {
-        val expected = mapOf(
-            "builtin:nb" to R.drawable.nb9,
-            "builtin:ftn" to R.drawable.ftn10,
-            "builtin:slb" to R.drawable.slb10,
-            "builtin:pl" to R.drawable.pl6,
-            "builtin:pogo" to R.drawable.pogo9,
-            "builtin:a" to R.drawable.a11,
-        )
+    fun `線画は一番手前の1枚だけで色を変えない`() {
+        // もと overlay 特別枠だったもの。今は「色を変えないレイヤー」として parts の末尾にいる。
         for (device in BuiltInCatalog.devices) {
-            val overlay = (device.overlay as? PartImage.Bundled)?.res
-            assertEquals("${device.id.value} の overlay", expected[device.id.value], overlay)
+            val untinted = device.parts.filterNot { it.isTinted }
+            assertEquals("${device.id.value} の色を変えない層の数", 1, untinted.size)
+            assertEquals(
+                "${device.id.value} の線画が最前面にない",
+                device.parts.last(),
+                untinted.single(),
+            )
         }
     }
 
     @Test
-    fun `パーツ画像が装具内で重複せず overlay とも重ならない`() {
+    fun `色を選べるパーツだけを取り出せる`() {
+        for (device in BuiltInCatalog.devices) {
+            // 線画1枚を除いた数になる。
+            assertEquals(
+                "${device.id.value} の色を選べるパーツ数",
+                device.parts.size - 1,
+                device.tintedParts.size,
+            )
+            assertTrue(device.tintedParts.all { it.paletteId != null })
+        }
+    }
+
+    @Test
+    fun `パーツ画像が装具内で重複しない`() {
         for (device in BuiltInCatalog.devices) {
             val images = device.parts.map { (it.image as PartImage.Bundled).res }
             assertEquals("${device.id.value} のパーツ画像に重複がある", images.size, images.toSet().size)
-            assertTrue(
-                "${device.id.value} の overlay がパーツ画像と重複している",
-                (device.overlay as? PartImage.Bundled)?.res !in images,
-            )
         }
     }
 
@@ -206,9 +219,10 @@ class BuiltInCatalogTest {
         for (device in BuiltInCatalog.devices) {
             assertTrue("${device.id.value} のサムネイル", device.thumbnail is PartImage.Bundled)
             assertTrue("${device.id.value} のラベル", device.label is DisplayText.Res)
-            for (part in device.parts) {
+            // 色を変えないレイヤーは paletteId が null なので対象外。
+            for (part in device.tintedParts) {
                 assertTrue(
-                    "${device.id.value} が未定義のパレット ${part.paletteId.value} を指している",
+                    "${device.id.value} が未定義のパレット ${part.paletteId?.value} を指している",
                     part.paletteId in known,
                 )
             }

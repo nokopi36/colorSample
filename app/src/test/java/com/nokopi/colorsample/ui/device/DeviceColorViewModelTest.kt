@@ -8,6 +8,8 @@ import com.nokopi.colorsample.data.model.ColorId
 import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.store.StoredCatalog
 import com.nokopi.colorsample.data.store.StoredColor
+import com.nokopi.colorsample.data.store.StoredDevice
+import com.nokopi.colorsample.data.store.StoredPart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,14 +77,10 @@ class DeviceColorViewModelTest {
     fun `表示中に装具が消えたら NotFound に変わる`() = runTest {
         val userDevice = StoredCatalog(
             devices = listOf(
-                com.nokopi.colorsample.data.store.StoredDevice(
+                StoredDevice(
                     id = "user:d1",
                     name = "自作",
-                    parts = listOf(
-                        com.nokopi.colorsample.data.store.StoredPart(
-                            "user:p1", "本体", "p1.png", leather.value,
-                        ),
-                    ),
+                    parts = listOf(StoredPart("user:p1", "本体", "p1.png", leather.value)),
                 ),
             ),
         )
@@ -102,9 +100,11 @@ class DeviceColorViewModelTest {
         subscribe(viewModel)
 
         val state = ready(viewModel)
-        assertEquals(8, state.parts.size)
+        // 線画 (色を変えないレイヤー) は選択欄には出ない。
+        assertEquals(9, state.device.parts.size)
+        assertEquals(8, state.selections.size)
         assertEquals("", state.personName)
-        assertTrue(state.parts.all { it.selected == it.palette.options.first() })
+        assertTrue(state.selections.all { it.selected == it.palette.options.first() })
     }
 
     @Test
@@ -112,12 +112,12 @@ class DeviceColorViewModelTest {
         val viewModel = viewModelFor()
         subscribe(viewModel)
 
-        val parts = ready(viewModel).parts
+        val parts = ready(viewModel).selections
         val target = parts[2]
         val newColor = target.palette.options[5]
         viewModel.selectColor(target.part.id, newColor.id)
 
-        val after = ready(viewModel).parts
+        val after = ready(viewModel).selections
         assertEquals(newColor, after[2].selected)
         assertEquals(parts[0].selected, after[0].selected)
         assertEquals(parts[1].selected, after[1].selected)
@@ -133,10 +133,10 @@ class DeviceColorViewModelTest {
         val viewModel = viewModelFor(catalog = catalog)
         subscribe(viewModel)
 
-        val target = ready(viewModel).parts.first { it.part.paletteId == leather }
+        val target = ready(viewModel).selections.first { it.part.paletteId == leather }
         val chosen = target.palette.options[3]
         viewModel.selectColor(target.part.id, chosen.id)
-        assertEquals(chosen, ready(viewModel).parts.first { it.part.paletteId == leather }.selected)
+        assertEquals(chosen, ready(viewModel).selections.first { it.part.paletteId == leather }.selected)
 
         // 革のパレットに色が1つ増える
         catalog.value = CatalogMerger.merge(
@@ -147,7 +147,7 @@ class DeviceColorViewModelTest {
             ),
         )
 
-        val after = ready(viewModel).parts.first { it.part.paletteId == leather }
+        val after = ready(viewModel).selections.first { it.part.paletteId == leather }
         assertEquals(chosen, after.selected)
         assertEquals(target.palette.options.size + 1, after.palette.options.size)
     }
@@ -161,13 +161,13 @@ class DeviceColorViewModelTest {
         val viewModel = viewModelFor(catalog = catalog)
         subscribe(viewModel)
 
-        val target = ready(viewModel).parts.first { it.part.paletteId == leather }
+        val target = ready(viewModel).selections.first { it.part.paletteId == leather }
         viewModel.selectColor(target.part.id, ColorId("user:c1"))
-        assertEquals(ColorId("user:c1"), ready(viewModel).parts.first { it.part.paletteId == leather }.selected.id)
+        assertEquals(ColorId("user:c1"), ready(viewModel).selections.first { it.part.paletteId == leather }.selected.id)
 
         catalog.value = CatalogMerger.merge(StoredCatalog.EMPTY)
 
-        val after = ready(viewModel).parts.first { it.part.paletteId == leather }
+        val after = ready(viewModel).selections.first { it.part.paletteId == leather }
         assertEquals(after.palette.options.first(), after.selected)
     }
 
@@ -186,14 +186,14 @@ class DeviceColorViewModelTest {
         val viewModel = viewModelFor()
         subscribe(viewModel)
 
-        val target = ready(viewModel).parts[1]
+        val target = ready(viewModel).selections[1]
         viewModel.updatePersonName("山田")
         viewModel.selectColor(target.part.id, target.palette.options[4].id)
         viewModel.reset()
 
         val state = ready(viewModel)
         assertEquals("山田", state.personName)
-        assertTrue(state.parts.all { it.selected == it.palette.options.first() })
+        assertTrue(state.selections.all { it.selected == it.palette.options.first() })
     }
 
     @Test
@@ -210,7 +210,7 @@ class DeviceColorViewModelTest {
 
         val state = ready(viewModel)
         assertEquals("復元 花子", state.personName)
-        assertEquals(colorId, state.parts[2].selected.id)
+        assertEquals(colorId, state.selections[2].selected.id)
     }
 
     @Test
@@ -218,6 +218,6 @@ class DeviceColorViewModelTest {
         val viewModel = viewModelFor(saved = mapOf("selections" to "これはJSONではない"))
         subscribe(viewModel)
 
-        assertTrue(ready(viewModel).parts.all { it.selected == it.palette.options.first() })
+        assertTrue(ready(viewModel).selections.all { it.selected == it.palette.options.first() })
     }
 }

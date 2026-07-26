@@ -20,7 +20,7 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
-/** パーツ1つ分の、画面に出すのに必要なものが揃った状態。 */
+/** 色を選べるパーツ1つ分の、画面に出すのに必要なものが揃った状態。 */
 data class PartSelection(
     val part: PartSpec,
     val palette: Palette,
@@ -34,10 +34,15 @@ sealed interface DeviceColorUiState {
     /** 表示中に装具が削除された、または不正な ID で開かれた。 */
     data object NotFound : DeviceColorUiState
 
+    /**
+     * @property layers 描画順に並んだ全レイヤー。色を変えないものも含む。
+     * @property selections 色を選べるパーツだけ。選択欄に並ぶのはこれ。
+     */
     data class Ready(
         val device: Device,
         val personName: String,
-        val parts: List<PartSelection>,
+        val layers: List<PreviewLayer>,
+        val selections: List<PartSelection>,
     ) : DeviceColorUiState
 }
 
@@ -75,18 +80,28 @@ class DeviceColorViewModel(
         selections: Map<String, String>,
     ): DeviceColorUiState {
         val device = catalog.device(deviceId) ?: return DeviceColorUiState.NotFound
+
+        // パーツごとに1回だけ解決し、描画用と選択欄用の両方に使う。
+        // 色を変えないレイヤーは選択欄には出さないが、描画には並び順のまま含める。
+        val resolved = device.parts.map { part ->
+            val palette = part.paletteId?.let(catalog::palette)
+            part to palette?.let {
+                PartSelection(
+                    part = part,
+                    palette = it,
+                    // 消された色を参照していたら先頭に落ちる。
+                    selected = it.optionOrFirst(selections[part.id.value]?.let(::ColorId)),
+                )
+            }
+        }
+
         return DeviceColorUiState.Ready(
             device = device,
             personName = personName,
-            parts = device.parts.map { part ->
-                val palette = catalog.palette(part.paletteId)
-                PartSelection(
-                    part = part,
-                    palette = palette,
-                    // 消された色を参照していたら先頭に落ちる。
-                    selected = palette.optionOrFirst(selections[part.id.value]?.let(::ColorId)),
-                )
+            layers = resolved.map { (part, selection) ->
+                PreviewLayer(image = part.image, color = selection?.selected?.color)
             },
+            selections = resolved.mapNotNull { (_, selection) -> selection },
         )
     }
 

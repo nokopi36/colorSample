@@ -26,6 +26,7 @@
     <string name="kahuband">カフバンド</string>
     <string name="ankle_band">足首バンド</string>
     <string name="shoe_sole">靴底</string>
+    <string name="line_art">線画</string>
 
     <!-- 色 -->
     <string name="color_white">白</string>
@@ -75,6 +76,36 @@
     <string name="hex_color">16進</string>
     <string name="hex_color_hint">例 #F5B2B2</string>
     <string name="hex_color_invalid">#RRGGBB の形で入力してください</string>
+
+    <!-- 装具の追加・編集 -->
+    <string name="add_device">装具を追加</string>
+    <string name="edit_device">装具を編集</string>
+    <string name="delete_device">装具を削除</string>
+    <string name="save_device">保存</string>
+    <string name="device_name">装具の名前</string>
+    <string name="pick_part_images">パーツ画像を選ぶ</string>
+    <string name="part_image_requirements">レイヤーごとに1枚の透過PNG。すべて同じサイズで、色を変える層はベタ塗りのシルエットにしてください。線画などは「色を変えない」にすれば何枚でも置けます。</string>
+    <string name="part_name">パーツ名</string>
+    <string name="part_palette">選べる色</string>
+    <string name="dont_tint_layer">色を変えない（線画・固定色など）</string>
+    <string name="layer_position">%1$d / %2$d 枚目（上にあるほど奥）</string>
+    <string name="move_layer_up">奥へ移動</string>
+    <string name="move_layer_down">手前へ移動</string>
+    <string name="remove_layer">このパーツを外す</string>
+    <string name="discard_changes_title">編集をやめますか？</string>
+    <string name="discard_changes_message">保存していない内容は失われます。</string>
+    <string name="discard">やめる</string>
+    <string name="delete_device_title">「%1$s」を削除しますか？</string>
+    <string name="delete_device_message">取り込んだ画像もまとめて削除されます。この操作は取り消せません。</string>
+    <string name="delete">削除</string>
+    <string name="device_save_failed">装具を保存できませんでした</string>
+    <string name="no_user_devices">「装具を追加」から自分の装具を登録できます</string>
+
+    <!-- 画像を弾いたときの理由 -->
+    <string name="reject_not_transparent_png">透過PNGを選んでください（JPEGなど透明を持たない画像は使えません）</string>
+    <string name="reject_size_mismatch">パーツ画像はすべて同じサイズにしてください（1枚目 %1$s / この画像 %2$s）</string>
+    <string name="reject_empty">中身が透明な画像です</string>
+    <string name="reject_unreadable">画像を読み込めませんでした</string>
 
     <!-- 画面 -->
     <string name="name">氏名</string>

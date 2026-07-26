@@ -1,9 +1,15 @@
 package com.nokopi.colorsample.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,17 +17,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -44,6 +54,8 @@ import com.nokopi.colorsample.ui.device.rememberPartPainter
 
 /**
  * 装具を選ぶホーム画面。並び順は組み込み6種のあとにユーザーが作ったもの。
+ *
+ * ユーザーが作った装具は長押しで編集・削除できる。組み込みは変えられない。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,10 +63,15 @@ fun HomeScreen(
     versionName: String,
     devices: List<Device>,
     onSelectDevice: (DeviceId) -> Unit,
+    onAddDevice: () -> Unit,
+    onEditDevice: (DeviceId) -> Unit,
+    onDeleteDevice: (DeviceId) -> Unit,
     onManageColors: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var pendingDelete by remember { mutableStateOf<Device?>(null) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -68,22 +85,91 @@ fun HomeScreen(
                 ),
             )
         },
+        // フッターを bottomBar に置くと、Scaffold が FAB をその上に配置してくれる。
+        // コンテンツ内に置いていたときは FAB が重なってバージョン表記を隠していた。
+        bottomBar = {
+            HomeFooter(versionName = versionName, onOpenPrivacyPolicy = onOpenPrivacyPolicy)
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onAddDevice,
+                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                text = { Text(stringResource(R.string.add_device)) },
+            )
+        },
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                devices.forEach { device ->
-                    DeviceCard(device = device, onClick = { onSelectDevice(device.id) })
-                }
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            devices.forEach { device ->
+                DeviceCard(
+                    device = device,
+                    onClick = { onSelectDevice(device.id) },
+                    onEdit = { onEditDevice(device.id) },
+                    onDelete = { pendingDelete = device },
+                )
+            }
+            if (devices.none { !it.isBuiltIn }) {
+                Text(
+                    text = stringResource(R.string.no_user_devices),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
-            HorizontalDivider()
+            // FAB はフッターより上・コンテンツの上に浮くので、
+            // 最後のカードが隠れないぶんだけ空けておく。
+            Spacer(modifier = Modifier.height(FAB_CLEARANCE))
+        }
+    }
 
+    pendingDelete?.let { device ->
+        val name = device.label.resolve()
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            title = { Text(stringResource(R.string.delete_device_title, name)) },
+            text = { Text(stringResource(R.string.delete_device_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        pendingDelete = null
+                        onDeleteDevice(device.id)
+                    },
+                ) { Text(stringResource(R.string.delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
+}
+
+/** FAB の高さぶんの余白。最後のカードが FAB の下に潜らないようにする。 */
+private val FAB_CLEARANCE = 88.dp
+
+/**
+ * プライバシーポリシーとバージョン表記のフッター。
+ *
+ * `bottomBar` に渡す composable には Scaffold がインセットを当てないので、
+ * ナビゲーションバーのぶんは自分で避ける。
+ */
+@Composable
+private fun HomeFooter(
+    versionName: String,
+    onOpenPrivacyPolicy: () -> Unit,
+) {
+    Surface {
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            HorizontalDivider()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,14 +212,18 @@ private fun HomeOverflowMenu(onManageColors: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DeviceCard(
     device: Device,
     onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
     Card(
-        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -141,7 +231,13 @@ private fun DeviceCard(
         ),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = onClick,
+                    // 組み込みは編集も削除もできないので長押しにも反応させない。
+                    onLongClick = if (device.isBuiltIn) null else { { menuExpanded = true } },
+                )
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -154,7 +250,38 @@ private fun DeviceCard(
             Text(
                 text = device.label.resolve(),
                 style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f),
             )
+
+            if (!device.isBuiltIn) {
+                Box {
+                    IconButton(onClick = { menuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.more_options),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.edit_device)) },
+                            onClick = {
+                                menuExpanded = false
+                                onEdit()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.delete_device)) },
+                            onClick = {
+                                menuExpanded = false
+                                onDelete()
+                            },
+                        )
+                    }
+                }
+            }
         }
     }
 }

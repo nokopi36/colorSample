@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
@@ -30,7 +31,12 @@ import com.nokopi.colorsample.ui.theme.PreviewCanvasContent
 import com.nokopi.colorsample.ui.theme.PreviewCanvasOutline
 
 /**
- * 配色プレビュー。パーツ画像を順に重ね、選ばれた色で tint する。
+ * 重ねて描く1枚。[color] が null なら色を変えずにそのまま描く（線画など）。
+ */
+data class PreviewLayer(val image: PartImage, val color: Color?)
+
+/**
+ * 配色プレビュー。[layers] を並びのとおりに重ね、色が指定された層だけ tint する。
  *
  * Compose 移行前は `Drawable.setTint()` した Drawable を ImageView に流し込んでいたが、
  * `ContextCompat.getDrawable()` の戻り値は ConstantState を共有するため
@@ -43,8 +49,7 @@ import com.nokopi.colorsample.ui.theme.PreviewCanvasOutline
 @Composable
 fun ColorPreview(
     deviceLabel: String,
-    parts: List<PartSelection>,
-    overlay: PartImage?,
+    layers: List<PreviewLayer>,
     personName: String,
     modifier: Modifier = Modifier,
     graphicsLayer: GraphicsLayer? = null,
@@ -90,21 +95,12 @@ fun ColorPreview(
         ) {
             val description = stringResource(R.string.preview_description, deviceLabel)
 
-            parts.forEachIndexed { index, selection ->
+            // 並びがそのまま描画順（先頭が最背面）。色を変えないレイヤーも位置どおりに描く。
+            layers.forEachIndexed { index, layer ->
                 Image(
-                    painter = rememberPartPainter(selection.part.image),
+                    painter = rememberPartPainter(layer.image),
                     contentDescription = if (index == 0) description else null,
-                    colorFilter = ColorFilter.tint(selection.selected.color),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-
-            // 輪郭など色を変えない最前面のレイヤー
-            overlay?.let {
-                Image(
-                    painter = rememberPartPainter(it),
-                    contentDescription = null,
+                    colorFilter = layer.color?.let(ColorFilter::tint),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize(),
                 )

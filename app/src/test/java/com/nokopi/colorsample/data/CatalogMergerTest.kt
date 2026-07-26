@@ -2,6 +2,7 @@ package com.nokopi.colorsample.data
 
 import androidx.compose.ui.graphics.toArgb
 import com.nokopi.colorsample.data.model.ColorId
+import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.model.DisplayText
 import com.nokopi.colorsample.data.model.PartImage
 import com.nokopi.colorsample.data.store.StoredCatalog
@@ -64,16 +65,20 @@ class CatalogMergerTest {
         assertTrue(catalog.palettes.flatMap { it.options }.all { it.isBuiltIn })
     }
 
-    // ---- 装具（Phase 2 で使う経路。マージの筋だけ先に固めておく）----------
+    // ---- 装具 ----------------------------------------------------------
+
+    private fun part(id: String, file: String, palette: String? = leather.value) =
+        StoredPart(id = id, name = "パーツ$id", fileName = file, paletteId = palette)
 
     private fun storedDevice(
         id: String = "user:dev1",
         parts: List<StoredPart> = listOf(
-            StoredPart("user:p1", "本体", "p1.png", leather.value),
-            StoredPart("user:p2", "ベルト", "p2.png", leather.value),
+            part("user:p1", "p1.png"),
+            part("user:p2", "p2.png"),
+            // 色を変えないレイヤー（線画）
+            part("user:p3", "line.png", palette = null),
         ),
-        overlay: String? = "line.png",
-    ) = StoredDevice(id = id, name = "自作装具", parts = parts, overlayFileName = overlay)
+    ) = StoredDevice(id = id, name = "自作装具", parts = parts)
 
     @Test
     fun `ユーザーの装具は組み込みの後ろに並びパスが解決される`() {
@@ -84,51 +89,119 @@ class CatalogMergerTest {
 
         assertEquals(DisplayText.Literal("自作装具"), device.label)
         assertEquals(
-            PartImage.Stored("devices/user:dev1/p1.png"),
+            PartImage.Stored("devices/user_dev1/p1.png"),
             device.parts.first().image,
         )
-        assertEquals(PartImage.Stored("devices/user:dev1/line.png"), device.overlay)
-        // 線画があればサムネイルはそれを使う。
-        assertEquals(device.overlay, device.thumbnail)
     }
 
     @Test
-    fun `線画が無ければサムネイルは最背面のパーツになる`() {
-        val catalog = CatalogMerger.merge(
-            StoredCatalog(devices = listOf(storedDevice(overlay = null))),
+    fun `並び順がそのまま保たれる`() {
+        // 描画順そのものなので、ここが崩れると重なりが変わる。
+        val catalog = CatalogMerger.merge(StoredCatalog(devices = listOf(storedDevice())))
+        assertEquals(
+            listOf("p1.png", "p2.png", "line.png"),
+            catalog.devices.last().parts.map {
+                (it.image as PartImage.Stored).relativePath.substringAfterLast('/')
+            },
         )
+    }
+
+    @Test
+    fun `パレットが null のレイヤーは色を変えない扱いになる`() {
+        val catalog = CatalogMerger.merge(StoredCatalog(devices = listOf(storedDevice())))
         val device = catalog.devices.last()
 
-        assertNull(device.overlay)
-        assertEquals(PartImage.Stored("devices/user:dev1/p1.png"), device.thumbnail)
+        assertEquals(2, device.tintedParts.size)
+        assertTrue("線画が色を変える扱いになっている", !device.parts.last().isTinted)
     }
 
     @Test
-    fun `パレットが解決できないパーツは落とす`() {
+    fun `色を変えないレイヤーは何枚でも持てて途中にも置ける`() {
+        // 以前は最前面に1枚だけという制約があった。
         val catalog = CatalogMerger.merge(
             StoredCatalog(
                 devices = listOf(
                     storedDevice(
                         parts = listOf(
-                            StoredPart("user:p1", "本体", "p1.png", leather.value),
-                            StoredPart("user:p2", "謎", "p2.png", "not_a_palette"),
+                            part("user:p1", "shadow.png", palette = null),
+                            part("user:p2", "body.png"),
+                            part("user:p3", "buckle.png", palette = null),
+                            part("user:p4", "belt.png"),
+                            part("user:p5", "line.png", palette = null),
                         ),
                     ),
                 ),
             ),
         )
         val device = catalog.devices.last()
-        assertEquals(1, device.parts.size)
-        assertEquals("本体", (device.parts.single().label as DisplayText.Literal).value)
+
+        assertEquals(5, device.parts.size)
+        assertEquals(2, device.tintedParts.size)
+        assertEquals(
+            listOf(false, true, false, true, false),
+            device.parts.map { it.isTinted },
+        )
     }
 
     @Test
-    fun `パーツが1つも残らない装具は出さない`() {
+    fun `サムネイルは一番手前の色を変えないレイヤーを使う`() {
+        val catalog = CatalogMerger.merge(StoredCatalog(devices = listOf(storedDevice())))
+        assertEquals(
+            PartImage.Stored("devices/user_dev1/line.png"),
+            catalog.devices.last().thumbnail,
+        )
+    }
+
+    @Test
+    fun `色を変えないレイヤーが無ければ一番手前を使う`() {
         val catalog = CatalogMerger.merge(
             StoredCatalog(
                 devices = listOf(
                     storedDevice(
-                        parts = listOf(StoredPart("user:p1", "謎", "p1.png", "not_a_palette")),
+                        parts = listOf(part("user:p1", "p1.png"), part("user:p2", "p2.png")),
+                    ),
+                ),
+            ),
+        )
+        assertEquals(
+            PartImage.Stored("devices/user_dev1/p2.png"),
+            catalog.devices.last().thumbnail,
+        )
+    }
+
+    @Test
+    fun `パレットが解決できないレイヤーだけ落とす`() {
+        val catalog = CatalogMerger.merge(
+            StoredCatalog(
+                devices = listOf(
+                    storedDevice(
+                        parts = listOf(
+                            part("user:p1", "p1.png"),
+                            part("user:p2", "p2.png", palette = "not_a_palette"),
+                            part("user:p3", "line.png", palette = null),
+                        ),
+                    ),
+                ),
+            ),
+        )
+        val device = catalog.devices.last()
+        // 色を変えない層 (null) は落とさず、解決できない指定だけ落ちる。
+        assertEquals(2, device.parts.size)
+        assertEquals(
+            listOf("p1.png", "line.png"),
+            device.parts.map {
+                (it.image as PartImage.Stored).relativePath.substringAfterLast('/')
+            },
+        )
+    }
+
+    @Test
+    fun `レイヤーが1つも残らない装具は出さない`() {
+        val catalog = CatalogMerger.merge(
+            StoredCatalog(
+                devices = listOf(
+                    storedDevice(
+                        parts = listOf(part("user:p1", "p1.png", palette = "not_a_palette")),
                     ),
                 ),
             ),
@@ -140,6 +213,6 @@ class CatalogMergerTest {
     fun `device で ID から引ける`() {
         val catalog = CatalogMerger.merge(StoredCatalog(devices = listOf(storedDevice())))
         assertNotNull(catalog.device(catalog.devices.last().id))
-        assertNull(catalog.device(com.nokopi.colorsample.data.model.DeviceId("user:missing")))
+        assertNull(catalog.device(DeviceId("user:missing")))
     }
 }

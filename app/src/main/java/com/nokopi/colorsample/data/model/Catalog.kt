@@ -29,20 +29,29 @@ data class Palette(
         options.firstOrNull { it.id == colorId } ?: options.first()
 }
 
-/** 色を変えられるパーツ1つ分。[image] を [paletteId] のいずれかの色で tint して重ねる。 */
+/**
+ * レイヤー1枚分。
+ *
+ * @property paletteId 選べる色。**null なら色を変えないレイヤー**（線画や固定色の金具など）。
+ *   以前は「最前面の線画」を装具に1枚だけ持てる特別枠にしていたが、それだと色を変えない層を
+ *   複数持てず、tint する層のあいだに挟むこともできなかった。レイヤー側の属性にすることで
+ *   [Device.parts] の並びのとおりに描けるようになる。
+ */
 @Immutable
 data class PartSpec(
     val id: PartId,
     val label: DisplayText,
     val image: PartImage,
-    val paletteId: PaletteId,
-)
+    val paletteId: PaletteId?,
+) {
+    val isTinted: Boolean get() = paletteId != null
+}
 
 /**
  * 装具1種類。
  *
- * [parts] の並びは描画順（先頭が最背面）で、色選択の表示順も兼ねる。
- * [overlay] は tint しない最前面のレイヤー（線画）。無くてもよい。
+ * [parts] の並びが描画順（先頭が最背面）。色を変えないレイヤーもこの並びに含まれ、
+ * 位置どおりに描かれる。
  */
 @Immutable
 data class Device(
@@ -50,9 +59,11 @@ data class Device(
     val label: DisplayText,
     val thumbnail: PartImage,
     val parts: List<PartSpec>,
-    val overlay: PartImage?,
 ) {
     val isBuiltIn: Boolean get() = id.isBuiltIn
+
+    /** 色を選べるパーツだけ。配色画面の選択欄に並ぶのはこれ。 */
+    val tintedParts: List<PartSpec> get() = parts.filter { it.isTinted }
 }
 
 /** 画面に渡すカタログ全体。 */

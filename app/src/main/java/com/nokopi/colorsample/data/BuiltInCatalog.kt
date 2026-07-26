@@ -126,6 +126,18 @@ object BuiltInCatalog {
             paletteId = palette,
         )
 
+    /**
+     * 色を変えないレイヤー。装具の輪郭を描いた線画がこれにあたる。
+     * 一番手前に置くので [parts] の末尾に並べる。
+     */
+    private fun lineArt(device: String, index: Int, image: Int) =
+        PartSpec(
+            id = PartId(builtInId("$device:$index")),
+            label = DisplayText.Res(R.string.line_art),
+            image = PartImage.Bundled(image),
+            paletteId = null,
+        )
+
     val devices: List<Device> = listOf(
         Device(
             id = DeviceId(builtInId("nb")),
@@ -140,8 +152,8 @@ object BuiltInCatalog {
                 part("nb", 6, R.string.felt, R.drawable.nb6, whiteBlackId),
                 part("nb", 7, R.string.string, R.drawable.nb7, stringId),
                 part("nb", 8, R.string.button, R.drawable.nb8, buttonId),
+                lineArt("nb", 9, R.drawable.nb9),
             ),
-            overlay = PartImage.Bundled(R.drawable.nb9),
         ),
         Device(
             id = DeviceId(builtInId("ftn")),
@@ -157,8 +169,8 @@ object BuiltInCatalog {
                 part("ftn", 7, R.string.shoe_sole, R.drawable.ftn7, whiteBlackId),
                 part("ftn", 8, R.string.button, R.drawable.ftn8, buttonId),
                 part("ftn", 9, R.string.string, R.drawable.ftn9, stringId),
+                lineArt("ftn", 10, R.drawable.ftn10),
             ),
-            overlay = PartImage.Bundled(R.drawable.ftn10),
         ),
         Device(
             id = DeviceId(builtInId("slb")),
@@ -174,8 +186,8 @@ object BuiltInCatalog {
                 part("slb", 7, R.string.shoe_sole, R.drawable.slb7, whiteBlackId),
                 part("slb", 8, R.string.string, R.drawable.slb8, stringId),
                 part("slb", 9, R.string.button, R.drawable.slb9, buttonId),
+                lineArt("slb", 10, R.drawable.slb10),
             ),
-            overlay = PartImage.Bundled(R.drawable.slb10),
         ),
         Device(
             id = DeviceId(builtInId("pl")),
@@ -189,8 +201,8 @@ object BuiltInCatalog {
                 part("pl", 3, R.string.belt, R.drawable.pl3, bandId),
                 part("pl", 4, R.string.button, R.drawable.pl4, buttonId),
                 part("pl", 1, R.string.plastic, R.drawable.pl1, plasticId),
+                lineArt("pl", 6, R.drawable.pl6),
             ),
-            overlay = PartImage.Bundled(R.drawable.pl6),
         ),
         Device(
             id = DeviceId(builtInId("pogo")),
@@ -207,8 +219,8 @@ object BuiltInCatalog {
                 part("pogo", 6, R.string.belt4, R.drawable.pogo6, leatherId),
                 part("pogo", 7, R.string.button, R.drawable.pogo7, buttonId),
                 part("pogo", 8, R.string.string, R.drawable.pogo8, stringId),
+                lineArt("pogo", 9, R.drawable.pogo9),
             ),
-            overlay = PartImage.Bundled(R.drawable.pogo9),
         ),
         Device(
             id = DeviceId(builtInId("a")),
@@ -225,8 +237,8 @@ object BuiltInCatalog {
                 part("a", 8, R.string.felt, R.drawable.a8, whiteBlackId),
                 part("a", 9, R.string.button, R.drawable.a9, buttonId),
                 part("a", 10, R.string.string, R.drawable.a10, stringId),
+                lineArt("a", 11, R.drawable.a11),
             ),
-            overlay = PartImage.Bundled(R.drawable.a11),
         ),
     )
 }

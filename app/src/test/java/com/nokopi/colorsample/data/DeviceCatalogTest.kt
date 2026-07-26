@@ -250,11 +250,4 @@ class DeviceCatalogTest {
             }
         }
     }
-
-    @Test
-    fun `fromRouteArg が enum 名から装具を復元する`() {
-        for (device in DeviceType.entries) {
-            assertEquals(device, DeviceType.fromRouteArg(device.name))
-        }
-    }
 }

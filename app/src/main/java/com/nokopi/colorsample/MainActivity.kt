@@ -16,14 +16,14 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.nokopi.colorsample.navigation.ColorSampleNavHost
+import com.nokopi.colorsample.navigation.ColorSampleNavDisplay
 import com.nokopi.colorsample.ui.theme.ColorSampleTheme
 
 private const val PRIVACY_POLICY_URL =
     "https://qiita.com/nokopi/private/610b9ee0ca4986d59b8d"
 
 /**
- * アプリ唯一の Activity。画面遷移は Navigation Compose が持つ。
+ * アプリ唯一の Activity。画面遷移は Navigation 3 (NavDisplay) が持つ。
  */
 class MainActivity : ComponentActivity() {
 
@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ColorSampleTheme {
-                ColorSampleNavHost(
+                ColorSampleNavDisplay(
                     versionName = BuildConfig.VERSION_NAME,
                     onOpenPrivacyPolicy = ::openPrivacyPolicy,
                 )

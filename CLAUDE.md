@@ -24,9 +24,16 @@ combination so it can be saved, shared, or shown to a fabricator.
 ### Technology Stack
 - **Language**: Kotlin
 - **UI**: Jetpack Compose + Material3 (no XML layouts, no DataBinding/ViewBinding)
-- **Navigation**: Navigation Compose, single Activity
-- **Min SDK**: 21, Target/Compile SDK: 35
-- **Build**: AGP 8.7.2, Kotlin 2.1.0, Gradle KTS + `gradle/libs.versions.toml` version catalog
+- **Navigation**: Navigation 3 (`androidx.navigation3`), single Activity
+- **Min SDK**: 23 (forced by Compose 1.10+, which Navigation 3 pulls in), Target SDK 35, Compile SDK 36
+- **Build**: AGP 8.13.2, Kotlin 2.1.0, Gradle KTS + `gradle/libs.versions.toml` version catalog
+
+Version constraints worth knowing before you bump anything:
+- Navigation 3 requires **AGP 8.9.1+**. `lifecycle` **2.11+** would require AGP 9.1+, so lifecycle is pinned
+  to the 2.10 line to stay on AGP 8.x.
+- `material-icons-core` must be declared explicitly — material3 1.4 dropped it as a transitive dependency.
+- `app-update-ktx` drags in `fragment:1.1.0`, which breaks the ActivityResult APIs. A dependency
+  `constraints` block in `app/build.gradle.kts` bumps it; removing that reintroduces a lint error.
 
 ### The one idea that shapes the whole app
 
@@ -41,8 +48,8 @@ ViewModel (`ui/device/DeviceColorViewModel.kt`) serving all six.
 **To add or change a device, edit `DeviceType` and nothing else.** Do not add a screen or a ViewModel.
 
 ### Package Structure
-- `com.nokopi.colorsample` — `MainActivity` (the only Activity; hosts the NavHost and the in-app update flow)
-- `…​.navigation` — `Destinations` (routes) and `ColorSampleNavHost`
+- `com.nokopi.colorsample` — `MainActivity` (the only Activity; hosts the `NavDisplay` and the in-app update flow)
+- `…​.navigation` — `NavKeys` (`HomeKey` / `DeviceKey`) and `ColorSampleNavDisplay`
 - `…​.data` — `DeviceType` / `PartSpec` (the device table) and `Palette` / `ColorOption` (the colours)
 - `…​.ui.home` — device selection screen
 - `…​.ui.device` — the shared colour screen: `DeviceColorScreen`, `DeviceColorViewModel`, `ColorPreview`, `ColorPicker`
@@ -63,10 +70,16 @@ a `Drawable`. Colour swatches are drawn as Compose circles, not drawable resourc
 
 ### State
 
-`DeviceColorViewModel` keeps everything in `SavedStateHandle` (`personName` plus an `IntArray` of the
-selected option index per part), so state survives rotation and process death. The ViewModel holds no
-`Context` — labels are resolved with `stringResource` in the composables — which keeps it testable with
-plain JUnit. The device type arrives as the `type` route argument.
+`DeviceColorViewModel` keeps what the user picked in `SavedStateHandle` (`personName` plus an `IntArray`
+of the selected option index per part), so state survives rotation and process death. The ViewModel holds
+no `Context` — labels are resolved with `stringResource` in the composables — which keeps it testable with
+plain JUnit.
+
+The device type is **not** a route argument: Navigation 3 has none. `DeviceKey` carries a typed
+`DeviceType`, and `ColorSampleNavDisplay` passes it straight to the ViewModel constructor alongside a
+`createSavedStateHandle()`. `rememberViewModelStoreNavEntryDecorator()` is what scopes the ViewModel to
+the entry and supplies the `SavedStateRegistryOwner` that `createSavedStateHandle()` needs — dropping that
+decorator breaks state restoration.
 
 ### Resource Organization
 - Part images live in `res/drawable/` as `<device><n>.png` (`a1`–`a11`, `nb1`–`nb9`, …). The highest number

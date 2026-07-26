@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nokopi.colorsample.data.DeviceType
-import com.nokopi.colorsample.navigation.DEVICE_TYPE_ARG
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,19 +21,17 @@ data class DeviceColorUiState(
 /**
  * 装具1種類分の配色状態。
  *
- * 状態はすべて [SavedStateHandle] 側に置いてあるので、画面回転でもプロセス kill 後の
- * 復帰でもそのまま復元される。Context を持たない（ラベルの解決は Composable 側の
- * stringResource に任せている）ため、素の JUnit でテストできる。
+ * [device] は Navigation 3 のキー ([com.nokopi.colorsample.navigation.DeviceKey]) が
+ * 型付きで持っている値をそのまま受け取る。ユーザーが選んだ内容だけが [SavedStateHandle] に
+ * 載るので、画面回転でもプロセス kill 後の復帰でも復元される。
+ *
+ * Context を持たない（ラベルの解決は Composable 側の stringResource に任せている）ため、
+ * 素の JUnit でテストできる。
  */
 class DeviceColorViewModel(
+    val device: DeviceType,
     private val handle: SavedStateHandle,
 ) : ViewModel() {
-
-    val device: DeviceType = DeviceType.fromRouteArg(
-        checkNotNull(handle.get<String>(DEVICE_TYPE_ARG)) {
-            "ルート引数 '$DEVICE_TYPE_ARG' がありません"
-        },
-    )
 
     private val initialSelections = IntArray(device.parts.size)
 

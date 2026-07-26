@@ -129,9 +129,5 @@ enum class DeviceType(
         overlay = R.drawable.a11,
     ),
     ;
-
-    /** ホーム画面に並べる順。enum の宣言順がそのまま移行前の MainActivity の並びになっている。 */
-    companion object {
-        fun fromRouteArg(value: String): DeviceType = valueOf(value)
-    }
+    // ホーム画面に並べる順は enum の宣言順。移行前の MainActivity の並びに合わせてある。
 }

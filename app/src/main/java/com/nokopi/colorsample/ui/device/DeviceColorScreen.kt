@@ -46,7 +46,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nokopi.colorsample.R
 import com.nokopi.colorsample.data.DeviceType
 import com.nokopi.colorsample.util.ImageExport
@@ -59,8 +58,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun DeviceColorScreen(
     onNavigateUp: () -> Unit,
+    viewModel: DeviceColorViewModel,
     modifier: Modifier = Modifier,
-    viewModel: DeviceColorViewModel = viewModel(),
 ) {
     val device = viewModel.device
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

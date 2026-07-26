@@ -10,10 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,25 +27,31 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nokopi.colorsample.R
-import com.nokopi.colorsample.data.DeviceType
-import com.nokopi.colorsample.ui.theme.ColorSampleTheme
+import com.nokopi.colorsample.data.model.Device
+import com.nokopi.colorsample.data.model.DeviceId
+import com.nokopi.colorsample.data.model.resolve
+import com.nokopi.colorsample.ui.device.rememberPartPainter
 
 /**
- * 装具を選ぶホーム画面。並び順は [DeviceType] の宣言順。
+ * 装具を選ぶホーム画面。並び順は組み込み6種のあとにユーザーが作ったもの。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     versionName: String,
-    onSelectDevice: (DeviceType) -> Unit,
+    devices: List<Device>,
+    onSelectDevice: (DeviceId) -> Unit,
+    onManageColors: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -48,9 +60,11 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
+                actions = { HomeOverflowMenu(onManageColors = onManageColors) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
             )
         },
@@ -63,8 +77,8 @@ fun HomeScreen(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                DeviceType.entries.forEach { device ->
-                    DeviceCard(device = device, onClick = { onSelectDevice(device) })
+                devices.forEach { device ->
+                    DeviceCard(device = device, onClick = { onSelectDevice(device.id) })
                 }
             }
 
@@ -92,8 +106,29 @@ fun HomeScreen(
 }
 
 @Composable
+private fun HomeOverflowMenu(onManageColors: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton(onClick = { expanded = true }) {
+        Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = stringResource(R.string.more_options),
+        )
+    }
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.manage_colors)) },
+            onClick = {
+                expanded = false
+                onManageColors()
+            },
+        )
+    }
+}
+
+@Composable
 private fun DeviceCard(
-    device: DeviceType,
+    device: Device,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -111,23 +146,15 @@ private fun DeviceCard(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Image(
-                painter = painterResource(device.thumbnail),
+                painter = rememberPartPainter(device.thumbnail),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(72.dp),
             )
             Text(
-                text = stringResource(device.titleRes),
+                text = device.label.resolve(),
                 style = MaterialTheme.typography.titleMedium,
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeScreenPreview() {
-    ColorSampleTheme {
-        HomeScreen(versionName = "1.6", onSelectDevice = {}, onOpenPrivacyPolicy = {})
     }
 }

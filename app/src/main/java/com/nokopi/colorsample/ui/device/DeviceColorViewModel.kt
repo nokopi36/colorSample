@@ -3,94 +3,122 @@ package com.nokopi.colorsample.ui.device
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nokopi.colorsample.data.DeviceType
+import com.nokopi.colorsample.data.model.Catalog
+import com.nokopi.colorsample.data.model.ColorId
+import com.nokopi.colorsample.data.model.ColorOption
+import com.nokopi.colorsample.data.model.Device
+import com.nokopi.colorsample.data.model.DeviceId
+import com.nokopi.colorsample.data.model.Palette
+import com.nokopi.colorsample.data.model.PartId
+import com.nokopi.colorsample.data.model.PartSpec
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
-/**
- * 画面の状態。[selectedIndices] は [DeviceType.parts] と同じ並びで、
- * それぞれのパーツが自分のパレットの何番目の色を選んでいるかを持つ。
- */
-data class DeviceColorUiState(
-    val personName: String = "",
-    val selectedIndices: List<Int> = emptyList(),
+/** パーツ1つ分の、画面に出すのに必要なものが揃った状態。 */
+data class PartSelection(
+    val part: PartSpec,
+    val palette: Palette,
+    val selected: ColorOption,
 )
+
+sealed interface DeviceColorUiState {
+
+    data object Loading : DeviceColorUiState
+
+    /** 表示中に装具が削除された、または不正な ID で開かれた。 */
+    data object NotFound : DeviceColorUiState
+
+    data class Ready(
+        val device: Device,
+        val personName: String,
+        val parts: List<PartSelection>,
+    ) : DeviceColorUiState
+}
 
 /**
  * 装具1種類分の配色状態。
  *
- * [device] は Navigation 3 のキー ([com.nokopi.colorsample.navigation.DeviceKey]) が
- * 型付きで持っている値をそのまま受け取る。ユーザーが選んだ内容だけが [SavedStateHandle] に
- * 載るので、画面回転でもプロセス kill 後の復帰でも復元される。
+ * 選択は「パレットの何番目か」ではなく [PartId] → [ColorId] の対応で持つ。
+ * index で持つと、ユーザーが色を1つ追加しただけで既存の選択がずれてしまう。
  *
- * Context を持たない（ラベルの解決は Composable 側の stringResource に任せている）ため、
- * 素の JUnit でテストできる。
+ * 選んだ内容は [SavedStateHandle] に載るので、画面回転でもプロセス kill 後の復帰でも残る。
+ * 参照先の色が消えている場合（ユーザーが色を削除した）は、そのパレットの先頭に落とす。
  */
 class DeviceColorViewModel(
-    val device: DeviceType,
+    private val deviceId: DeviceId,
+    /** この画面はカタログを読むだけなので、リポジトリではなく読み取り口だけを受け取る。 */
+    catalog: Flow<Catalog>,
     private val handle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val initialSelections = IntArray(device.parts.size)
-
     val uiState: StateFlow<DeviceColorUiState> = combine(
+        catalog,
         handle.getStateFlow(KEY_PERSON_NAME, ""),
-        handle.getStateFlow(KEY_SELECTIONS, initialSelections),
-    ) { personName, selections ->
-        DeviceColorUiState(personName = personName, selectedIndices = normalize(selections))
+        handle.getStateFlow(KEY_SELECTIONS, EMPTY_SELECTIONS_JSON),
+    ) { catalog, personName, selectionsJson ->
+        buildState(catalog, personName, decode(selectionsJson))
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
-        initialValue = DeviceColorUiState(
-            personName = handle.get<String>(KEY_PERSON_NAME).orEmpty(),
-            selectedIndices = currentSelections().toList(),
-        ),
+        initialValue = DeviceColorUiState.Loading,
     )
 
-    /**
-     * 保存されていた選択を画面に出せる形に整える。
-     * 装具の定義が変わった後に古い保存状態から復帰しても壊れないよう、
-     * 要素数とパレットの範囲をここで揃える。
-     */
-    private fun normalize(selections: IntArray): List<Int> =
-        device.parts.mapIndexed { index, part ->
-            selections.getOrElse(index) { 0 }.coerceIn(part.palette.options.indices)
-        }
+    private fun buildState(
+        catalog: Catalog,
+        personName: String,
+        selections: Map<String, String>,
+    ): DeviceColorUiState {
+        val device = catalog.device(deviceId) ?: return DeviceColorUiState.NotFound
+        return DeviceColorUiState.Ready(
+            device = device,
+            personName = personName,
+            parts = device.parts.map { part ->
+                val palette = catalog.palette(part.paletteId)
+                PartSelection(
+                    part = part,
+                    palette = palette,
+                    // 消された色を参照していたら先頭に落ちる。
+                    selected = palette.optionOrFirst(selections[part.id.value]?.let(::ColorId)),
+                )
+            },
+        )
+    }
 
     fun updatePersonName(name: String) {
         handle[KEY_PERSON_NAME] = name
     }
 
-    /** [partIndex] 番目のパーツの色を、そのパレットの [optionIndex] 番目に変える。 */
-    fun selectColor(partIndex: Int, optionIndex: Int) {
-        val parts = device.parts
-        require(partIndex in parts.indices) { "パーツの番号が範囲外です: $partIndex" }
-        require(optionIndex in parts[partIndex].palette.options.indices) {
-            "色の番号が範囲外です: $optionIndex"
-        }
-        handle[KEY_SELECTIONS] = currentSelections().also { it[partIndex] = optionIndex }
+    fun selectColor(partId: PartId, colorId: ColorId) {
+        val updated = currentSelections() + (partId.value to colorId.value)
+        handle[KEY_SELECTIONS] = encode(updated)
     }
 
     /** 全パーツを初期色に戻す。氏名は誤タップでの入力消失を避けるため残す。 */
     fun reset() {
-        handle[KEY_SELECTIONS] = IntArray(device.parts.size)
+        handle[KEY_SELECTIONS] = EMPTY_SELECTIONS_JSON
     }
 
-    /** 保存済みの選択を、必ず要素数が合った書き換え可能なコピーとして取り出す。 */
-    private fun currentSelections(): IntArray {
-        val saved = handle.get<IntArray>(KEY_SELECTIONS)
-        return if (saved != null && saved.size == device.parts.size) {
-            saved.copyOf()
-        } else {
-            IntArray(device.parts.size)
-        }
-    }
+    private fun currentSelections(): Map<String, String> =
+        decode(handle.get<String>(KEY_SELECTIONS) ?: EMPTY_SELECTIONS_JSON)
 
     private companion object {
         const val KEY_PERSON_NAME = "personName"
         const val KEY_SELECTIONS = "selections"
+        const val EMPTY_SELECTIONS_JSON = "{}"
         const val STOP_TIMEOUT_MILLIS = 5_000L
+
+        val serializer = MapSerializer(String.serializer(), String.serializer())
+
+        // SavedStateHandle は Bundle 相当なので Map をそのまま置けない。JSON 文字列にして持つ。
+        fun encode(value: Map<String, String>): String = Json.encodeToString(serializer, value)
+
+        fun decode(value: String): Map<String, String> =
+            runCatching { Json.decodeFromString(serializer, value) }.getOrDefault(emptyMap())
     }
 }

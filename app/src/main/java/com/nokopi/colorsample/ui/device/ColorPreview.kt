@@ -19,13 +19,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.nokopi.colorsample.R
-import com.nokopi.colorsample.data.DeviceType
+import com.nokopi.colorsample.data.model.PartImage
 import com.nokopi.colorsample.ui.theme.PreviewCanvas
 import com.nokopi.colorsample.ui.theme.PreviewCanvasContent
 import com.nokopi.colorsample.ui.theme.PreviewCanvasOutline
@@ -33,7 +32,7 @@ import com.nokopi.colorsample.ui.theme.PreviewCanvasOutline
 /**
  * 配色プレビュー。パーツ画像を順に重ね、選ばれた色で tint する。
  *
- * 移行前は `Drawable.setTint()` した Drawable を ImageView に流し込んでいたが、
+ * Compose 移行前は `Drawable.setTint()` した Drawable を ImageView に流し込んでいたが、
  * `ContextCompat.getDrawable()` の戻り値は ConstantState を共有するため
  * `mutate()` を挟まないと同じ画像を使う別の描画にも色が漏れていた。
  * Compose では描画時の [ColorFilter] なので元の画像には触れない。
@@ -43,8 +42,9 @@ import com.nokopi.colorsample.ui.theme.PreviewCanvasOutline
  */
 @Composable
 fun ColorPreview(
-    device: DeviceType,
-    selectedIndices: List<Int>,
+    deviceLabel: String,
+    parts: List<PartSelection>,
+    overlay: PartImage?,
     personName: String,
     modifier: Modifier = Modifier,
     graphicsLayer: GraphicsLayer? = null,
@@ -88,24 +88,22 @@ fun ColorPreview(
                 .weight(1f)
                 .padding(8.dp),
         ) {
-            val description = stringResource(R.string.preview_description, stringResource(device.titleRes))
+            val description = stringResource(R.string.preview_description, deviceLabel)
 
-            device.parts.forEachIndexed { index, part ->
-                val options = part.palette.options
-                val selected = options[selectedIndices.getOrElse(index) { 0 }.coerceIn(options.indices)]
+            parts.forEachIndexed { index, selection ->
                 Image(
-                    painter = painterResource(part.image),
+                    painter = rememberPartPainter(selection.part.image),
                     contentDescription = if (index == 0) description else null,
-                    colorFilter = ColorFilter.tint(selected.color),
+                    colorFilter = ColorFilter.tint(selection.selected.color),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
 
             // 輪郭など色を変えない最前面のレイヤー
-            device.overlay?.let { overlay ->
+            overlay?.let {
                 Image(
-                    painter = painterResource(overlay),
+                    painter = rememberPartPainter(it),
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize(),

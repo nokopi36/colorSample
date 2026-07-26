@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,8 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.nokopi.colorsample.data.ColorOption
-import com.nokopi.colorsample.data.PartSpec
+import com.nokopi.colorsample.R
+import com.nokopi.colorsample.data.model.ColorId
+import com.nokopi.colorsample.data.model.ColorOption
+import com.nokopi.colorsample.data.model.PartId
+import com.nokopi.colorsample.data.model.resolve
 
 /** 色の見本。白が背景に溶けないよう必ず輪郭線を引く。 */
 @Composable
@@ -52,18 +56,20 @@ fun ColorSwatch(
 /**
  * パーツ1つ分の色選択。ラベルは入力欄のラベルとして出すので、
  * 「カフバンド」のような長いパーツ名でも横幅を食い合わない。
+ *
+ * 一覧の末尾に「色を追加…」を置き、足りない色をその場で足しに行けるようにしている。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorPickerField(
     label: String,
     options: List<ColorOption>,
-    selectedIndex: Int,
-    onSelect: (Int) -> Unit,
+    selected: ColorOption,
+    onSelect: (ColorId) -> Unit,
+    onAddColor: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selected = options[selectedIndex.coerceIn(options.indices)]
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -71,7 +77,7 @@ fun ColorPickerField(
         modifier = modifier,
     ) {
         OutlinedTextField(
-            value = stringResource(selected.labelRes),
+            value = selected.label.resolve(),
             onValueChange = {},
             readOnly = true,
             singleLine = true,
@@ -89,16 +95,25 @@ fun ColorPickerField(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            options.forEachIndexed { index, option ->
+            options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(stringResource(option.labelRes)) },
+                    text = { Text(option.label.resolve()) },
                     leadingIcon = { ColorSwatch(option.color, size = 24.dp) },
                     onClick = {
-                        onSelect(index)
+                        onSelect(option.id)
                         expanded = false
                     },
                 )
             }
+
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.add_color)) },
+                onClick = {
+                    expanded = false
+                    onAddColor()
+                },
+            )
         }
     }
 }
@@ -108,9 +123,9 @@ fun ColorPickerField(
  */
 @Composable
 fun ColorPickerGrid(
-    parts: List<PartSpec>,
-    selectedIndices: List<Int>,
-    onSelect: (partIndex: Int, optionIndex: Int) -> Unit,
+    parts: List<PartSelection>,
+    onSelect: (PartId, ColorId) -> Unit,
+    onAddColor: (PartSelection) -> Unit,
     columns: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -118,18 +133,19 @@ fun ColorPickerGrid(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        parts.withIndex().chunked(columns).forEach { row ->
+        parts.chunked(columns).forEach { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top,
             ) {
-                row.forEach { (partIndex, part) ->
+                row.forEach { selection ->
                     ColorPickerField(
-                        label = stringResource(part.labelRes),
-                        options = part.palette.options,
-                        selectedIndex = selectedIndices.getOrElse(partIndex) { 0 },
-                        onSelect = { onSelect(partIndex, it) },
+                        label = selection.part.label.resolve(),
+                        options = selection.palette.options,
+                        selected = selection.selected,
+                        onSelect = { onSelect(selection.part.id, it) },
+                        onAddColor = { onAddColor(selection) },
                         modifier = Modifier.weight(1f),
                     )
                 }

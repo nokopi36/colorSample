@@ -44,11 +44,44 @@
     <string name="color_brown">茶</string>
     <string name="color_mint">ミント</string>
 
+    <!-- パレット（色の管理画面での区分名） -->
+    <string name="palette_leather">革</string>
+    <string name="palette_plastic">プラスチック（プレーリーくん）</string>
+    <string name="palette_orthosis_plastic">プラスチック</string>
+    <string name="palette_sponge">スポンジ</string>
+    <string name="palette_pl_sponge">スポンジ（プレーリーくん）</string>
+    <string name="palette_band">バンド</string>
+    <string name="palette_string">糸</string>
+    <string name="palette_button">ボタン</string>
+    <string name="palette_white_black">白黒（フェルト・靴底・カン）</string>
+
+    <!-- 色の管理 -->
+    <string name="manage_colors">色の管理</string>
+    <string name="add_color">色を追加</string>
+    <string name="edit_color">色を編集</string>
+    <string name="delete_color">削除</string>
+    <string name="color_name">色の名前</string>
+    <string name="color_name_required">名前を入力してください</string>
+    <string name="built_in_color">組み込み</string>
+    <string name="built_in_not_editable">組み込みの色は編集できません</string>
+    <string name="color_deleted">「%1$s」を削除しました</string>
+    <string name="undo">元に戻す</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save_color">保存</string>
+    <string name="no_user_colors">まだ追加した色はありません</string>
+    <string name="hue">色相</string>
+    <string name="saturation">彩度</string>
+    <string name="brightness">明度</string>
+    <string name="hex_color">16進</string>
+    <string name="hex_color_hint">例 #F5B2B2</string>
+    <string name="hex_color_invalid">#RRGGBB の形で入力してください</string>
+
     <!-- 画面 -->
     <string name="name">氏名</string>
     <string name="privacyPolicy">プライバシーポリシー</string>
     <string name="version_format">ver.%1$s</string>
     <string name="back">戻る</string>
+    <string name="more_options">その他</string>
     <string name="reset">リセット</string>
     <string name="save">保存</string>
     <string name="share">共有</string>

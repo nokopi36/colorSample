@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,9 +36,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -47,35 +51,67 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nokopi.colorsample.R
-import com.nokopi.colorsample.data.DeviceType
+import com.nokopi.colorsample.data.model.PaletteId
+import com.nokopi.colorsample.data.model.resolve
 import com.nokopi.colorsample.util.ImageExport
 import kotlinx.coroutines.launch
 
 /**
- * 装具の配色画面。6種類すべてをこの1画面で担い、違いは [DeviceType] の定義から読む。
+ * 装具の配色画面。どの装具でもこの1画面で担い、違いはカタログの定義から読む。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceColorScreen(
     onNavigateUp: () -> Unit,
+    onAddColor: (PaletteId) -> Unit,
     viewModel: DeviceColorViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val device = viewModel.device
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    when (val state = viewModel.uiState.collectAsStateWithLifecycle().value) {
+        DeviceColorUiState.Loading -> LoadingScreen(modifier)
 
+        // 表示中に装具が削除された場合。留まっても操作できないので戻す。
+        DeviceColorUiState.NotFound -> LaunchedEffect(Unit) { onNavigateUp() }
+
+        is DeviceColorUiState.Ready -> DeviceColorContent(
+            state = state,
+            onNavigateUp = onNavigateUp,
+            onAddColor = onAddColor,
+            viewModel = viewModel,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeviceColorContent(
+    state: DeviceColorUiState.Ready,
+    onNavigateUp: () -> Unit,
+    onAddColor: (PaletteId) -> Unit,
+    viewModel: DeviceColorViewModel,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val graphicsLayer = rememberGraphicsLayer()
 
+    val deviceLabel = state.device.label.resolve()
     val savedMessage = stringResource(R.string.save_succeeded)
     val saveFailedMessage = stringResource(R.string.save_failed)
     val shareFailedMessage = stringResource(R.string.share_failed)
     val permissionDeniedMessage = stringResource(R.string.storage_permission_denied)
     val chooserTitle = stringResource(R.string.share_chooser_title)
 
-    fun exportFileName() = ImageExport.buildFileName(device.name, uiState.personName)
+    fun exportFileName() = ImageExport.buildFileName(deviceLabel, state.personName)
 
     fun save() {
         scope.launch {
@@ -121,7 +157,7 @@ fun DeviceColorScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(device.titleRes)) },
+                title = { Text(deviceLabel) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
                         Icon(
@@ -160,9 +196,10 @@ fun DeviceColorScreen(
 
             val preview: @Composable (Modifier) -> Unit = { previewModifier ->
                 ColorPreview(
-                    device = device,
-                    selectedIndices = uiState.selectedIndices,
-                    personName = uiState.personName,
+                    deviceLabel = deviceLabel,
+                    parts = state.parts,
+                    overlay = state.device.overlay,
+                    personName = state.personName,
                     graphicsLayer = graphicsLayer,
                     modifier = previewModifier,
                 )
@@ -174,7 +211,7 @@ fun DeviceColorScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     OutlinedTextField(
-                        value = uiState.personName,
+                        value = state.personName,
                         onValueChange = viewModel::updatePersonName,
                         label = { Text(stringResource(R.string.name)) },
                         singleLine = true,
@@ -183,9 +220,9 @@ fun DeviceColorScreen(
                     )
 
                     ColorPickerGrid(
-                        parts = device.parts,
-                        selectedIndices = uiState.selectedIndices,
+                        parts = state.parts,
                         onSelect = viewModel::selectColor,
+                        onAddColor = { onAddColor(it.part.paletteId) },
                         columns = columns,
                         modifier = Modifier.fillMaxWidth(),
                     )

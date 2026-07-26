@@ -1,8 +1,11 @@
 package com.nokopi.colorsample.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -14,9 +17,15 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.nokopi.colorsample.data.CatalogRepository
+import com.nokopi.colorsample.data.model.DeviceId
+import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.ui.device.DeviceColorScreen
 import com.nokopi.colorsample.ui.device.DeviceColorViewModel
 import com.nokopi.colorsample.ui.home.HomeScreen
+import com.nokopi.colorsample.ui.home.HomeViewModel
+import com.nokopi.colorsample.ui.palette.ManageColorsScreen
+import com.nokopi.colorsample.ui.palette.ManageColorsViewModel
 
 @Composable
 fun ColorSampleNavDisplay(
@@ -25,6 +34,8 @@ fun ColorSampleNavDisplay(
     modifier: Modifier = Modifier,
     backStack: NavBackStack<NavKey> = rememberNavBackStack(HomeKey),
 ) {
+    val repository = CatalogRepository.get(LocalContext.current)
+
     NavDisplay(
         backStack = backStack,
         modifier = modifier,
@@ -36,27 +47,54 @@ fun ColorSampleNavDisplay(
         ),
         entryProvider = entryProvider {
             entry<HomeKey> {
+                val homeViewModel: HomeViewModel =
+                    viewModel(factory = factory { HomeViewModel(repository) })
+                val devices by homeViewModel.devices.collectAsStateWithLifecycle()
+
                 HomeScreen(
                     versionName = versionName,
-                    onSelectDevice = { backStack.add(DeviceKey(it)) },
+                    devices = devices,
+                    onSelectDevice = { backStack.add(DeviceKey(it.value)) },
+                    onManageColors = { backStack.add(ManageColorsKey()) },
                     onOpenPrivacyPolicy = onOpenPrivacyPolicy,
                 )
             }
 
             entry<DeviceKey> { key ->
-                // Nav3 にはルート引数がないので、キーが持つ DeviceType をそのまま
-                // コンストラクタへ渡す。氏名と選択中の配色は引き続き SavedStateHandle に
-                // 載るので、回転でもプロセス death からの復帰でも残る。
+                // Nav3 にはルート引数がないので、キーが持つ値をそのままコンストラクタへ渡す。
+                // 氏名と選択中の配色は SavedStateHandle に載るので回転・プロセス death でも残る。
                 DeviceColorScreen(
                     onNavigateUp = { backStack.removeLastOrNull() },
-                    viewModel = viewModel(factory = deviceColorViewModelFactory(key)),
+                    onAddColor = { backStack.add(ManageColorsKey(it.value)) },
+                    viewModel = viewModel(
+                        factory = factory {
+                            DeviceColorViewModel(
+                                deviceId = DeviceId(key.deviceId),
+                                catalog = repository.catalog,
+                                handle = createSavedStateHandle(),
+                            )
+                        },
+                    ),
+                )
+            }
+
+            entry<ManageColorsKey> { key ->
+                ManageColorsScreen(
+                    onNavigateUp = { backStack.removeLastOrNull() },
+                    focusPaletteId = key.focusPaletteId?.let(::PaletteId),
+                    viewModel = viewModel(factory = factory { ManageColorsViewModel(repository) }),
                 )
             }
         },
     )
 }
 
-private fun deviceColorViewModelFactory(key: DeviceKey): ViewModelProvider.Factory =
-    viewModelFactory {
-        initializer { DeviceColorViewModel(key.type, createSavedStateHandle()) }
-    }
+/**
+ * `viewModel(factory = ...)` に渡す1行ファクトリ。
+ * ここでしか使わないので DI ライブラリは入れていない。
+ */
+private inline fun <reified T : androidx.lifecycle.ViewModel> factory(
+    crossinline create: androidx.lifecycle.viewmodel.CreationExtras.() -> T,
+): ViewModelProvider.Factory = viewModelFactory {
+    initializer { create() }
+}

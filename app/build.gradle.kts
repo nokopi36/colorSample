@@ -23,6 +23,23 @@ val keystoreProperties: Properties? = keystorePropertiesFile.takeIf { it.exists(
 }
 val hasReleaseSigning = keystoreProperties != null
 
+/**
+ * `storeFile` だけは生のテキストから読む。
+ *
+ * `Properties` は `\` をエスケープとして解釈するので、Windows のパスをそのまま貼った
+ * `C:\releaseKeystore\release-key.jks` は `\r` が改行文字に化けて壊れる。
+ * パスは貼り付けで入れるものなので、こちら側で受けたほうが事故が少ない。
+ *
+ * パスワードは特殊文字のエスケープが効いたほうがよいので [Properties] 経由のままにしている。
+ */
+fun readRawStoreFile(file: File): String? = file.readLines()
+    .firstOrNull { it.trimStart().startsWith("storeFile=") }
+    ?.substringAfter('=')
+    ?.trim()
+    ?.takeIf { it.isNotEmpty() }
+    // File は区切りが / でも解決できるので、貼り付けたままの \ を寄せておく。
+    ?.replace('\\', '/')
+
 android {
     namespace = "com.nokopi.colorsample"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -43,7 +60,10 @@ android {
                     keystoreProperties.getProperty(key)?.takeIf { it.isNotBlank() },
                 ) { "keystore.properties に $key がありません" }
 
-                storeFile = rootProject.file(required("storeFile")).also {
+                val path = requireNotNull(readRawStoreFile(keystorePropertiesFile)) {
+                    "keystore.properties に storeFile がありません"
+                }
+                storeFile = rootProject.file(path).also {
                     // ここで気づかないと、署名タスクまで進んでから分かりにくい形で失敗する。
                     require(it.isFile) { "keystore が見つかりません: ${it.absolutePath}" }
                 }

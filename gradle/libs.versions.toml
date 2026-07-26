@@ -8,8 +8,8 @@ compileSdk = "36"
 # Navigation 3 が引き込む Compose 1.10 が minSdk 23 を要求するため 21 から引き上げ。
 minSdk = "23"
 targetSdk = "35"
-versionCode = "20"
-versionName = "1.6"
+versionCode = "21"
+versionName = "2.0"
 
 coreKtx = "1.16.0"
 activityCompose = "1.12.0"

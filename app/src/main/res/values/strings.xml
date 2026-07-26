@@ -104,11 +104,33 @@
     <string name="save_device">保存</string>
     <string name="device_name">装具の名前</string>
     <string name="pick_part_images">パーツ画像を選ぶ</string>
-    <string name="part_image_requirements">レイヤーごとに1枚の透過PNG。すべて同じサイズで、色を変える層はベタ塗りのシルエットにしてください。線画などは「色を変えない」にすれば何枚でも置けます。</string>
+    <string name="part_image_requirements">色を変えたい部分ごとに分けた画像を選びます。すべて同じ大きさで、背景が透明なPNGにしてください。</string>
+    <string name="how_to_make_images">画像の作り方</string>
+
+    <!-- 画像の作り方（アプリ内で完結させるための説明） -->
+    <string name="image_help_title">パーツ画像の作り方</string>
+    <string name="image_help_intro">このアプリは、装具の絵を色を変えたい部分ごとに分けた画像を重ねて表示し、部分ごとに色を塗り替えます。組み込みの装具（Aブレースなど）も同じ作りです。</string>
+    <string name="image_help_parts_label">パーツごとの画像（Aブレースの例）</string>
+    <string name="image_help_stacked_label">重ねるとこうなります</string>
+    <string name="image_help_and_more">ほか</string>
+    <string name="image_help_step1_title">1. 色を変えたい部分ごとに分ける</string>
+    <string name="image_help_step1">たとえばAブレースなら、プラスチック・ベルト・ボタン・糸のように分けます。</string>
+    <string name="image_help_step2_title">2. 1つの部分を1枚の画像にする</string>
+    <string name="image_help_step2">その部分だけを描き、残りは透明にします。背景も透明にしてください。</string>
+    <string name="image_help_step3_title">3. 色を変える部分は1色でぬりつぶす</string>
+    <string name="image_help_step3">アプリが塗り替えると、その部分は選んだ色だけになります。影やグラデーションを描いても残りません。白一色でぬりつぶしておくのが分かりやすいです。</string>
+    <string name="image_help_step4_title">4. 輪郭線は別の1枚にする</string>
+    <string name="image_help_step4">線や、色を変えたくない金具などをまとめた画像を用意し、取り込んだあとに「色を変えない」を選びます。何枚でも置けます。</string>
+    <string name="image_help_step5_title">5. すべて同じ大きさで書き出す</string>
+    <string name="image_help_step5">ぴったり重ねて表示するので、大きさが違うと位置が合いません。同じキャンバスから書き出してください。</string>
+    <string name="image_help_format">形式は背景が透明なPNGです。JPEGは透明を持てないため使えません。大きすぎる画像は自動で縮小します。</string>
+    <string name="image_help_order">取り込んだあと、一覧の並びが重なる順番になります。上が奥、下が手前です。▲▼ で入れ替えられます。</string>
+
     <string name="part_name">パーツ名</string>
-    <string name="part_palette">選べる色</string>
-    <string name="dont_tint_layer">色を変えない（線画・固定色など）</string>
-    <string name="layer_position">%1$d / %2$d 枚目（上にあるほど奥）</string>
+    <string name="part_name_hint">例: ベルト1</string>
+    <string name="part_palette">この部分で選べる色</string>
+    <string name="dont_tint_layer">色を変えない（輪郭線など）</string>
+    <string name="layer_position">%1$d / %2$d 枚目 ・ 上が奥、下が手前</string>
     <string name="move_layer_up">奥へ移動</string>
     <string name="move_layer_down">手前へ移動</string>
     <string name="remove_layer">このパーツを外す</string>
@@ -119,17 +141,17 @@
     <string name="delete_device_message">取り込んだ画像もまとめて削除されます。この操作は取り消せません。</string>
     <string name="delete">削除</string>
     <string name="device_save_failed">装具を保存できませんでした</string>
-    <string name="no_user_devices">「装具を追加」から自分の装具を登録できます</string>
+    <string name="no_user_devices">「装具を追加」から装具を登録できます</string>
     <string name="hide_device">非表示</string>
     <string name="hidden_devices">非表示にした装具 %1$d件</string>
     <string name="hidden_devices_title">非表示にした装具</string>
     <string name="no_visible_devices">すべての装具を非表示にしています。右上のメニューから戻せます。</string>
 
-    <!-- 画像を弾いたときの理由 -->
-    <string name="reject_not_transparent_png">透過PNGを選んでください（JPEGなど透明を持たない画像は使えません）</string>
-    <string name="reject_size_mismatch">パーツ画像はすべて同じサイズにしてください（1枚目 %1$s / この画像 %2$s）</string>
-    <string name="reject_empty">中身が透明な画像です</string>
-    <string name="reject_unreadable">画像を読み込めませんでした</string>
+    <!-- 画像を弾いたときの理由。何が起きたかと、次にどうすればよいかを書く -->
+    <string name="reject_not_transparent_png">背景が透明なPNGを選んでください。JPEGは透明を持てないため使えません。</string>
+    <string name="reject_size_mismatch">大きさが違うので重ねられません（1枚目 %1$s / この画像 %2$s）。同じ大きさで書き出してください。</string>
+    <string name="reject_empty">全体が透明で、何も描かれていません。パーツが描かれた画像を選んでください。</string>
+    <string name="reject_unreadable">この画像は読み込めませんでした。別の画像で試してください。</string>
 
     <!-- 画面 -->
     <string name="name">氏名</string>

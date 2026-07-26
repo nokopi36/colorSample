@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -35,6 +38,7 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -56,8 +60,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -88,6 +94,7 @@ fun DeviceEditorScreen(
     val event by viewModel.events.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showDiscardDialog by remember { mutableStateOf(false) }
+    var showImageHelp by remember { mutableStateOf(false) }
 
     val picker = rememberLauncherForActivityResult(
         // 写真ピッカーではなくファイルピッカーにしているのは、アルファチャンネルが必須で
@@ -190,15 +197,21 @@ fun DeviceEditorScreen(
 
             item(key = "pick") {
                 Column {
-                    TextButton(
-                        onClick = { picker.launch(arrayOf(PNG_MIME_TYPE)) },
-                        enabled = !state.isImporting,
-                    ) {
-                        Icon(Icons.Default.Add, contentDescription = null)
-                        Text(
-                            text = stringResource(R.string.pick_part_images),
-                            modifier = Modifier.padding(start = 4.dp),
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(
+                            onClick = { picker.launch(arrayOf(PNG_MIME_TYPE)) },
+                            enabled = !state.isImporting,
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                            Text(
+                                text = stringResource(R.string.pick_part_images),
+                                modifier = Modifier.padding(start = 4.dp),
+                            )
+                        }
+                        // 詳しい説明は開いたときだけ出す。ここに全部書くと読まれない。
+                        TextButton(onClick = { showImageHelp = true }) {
+                            Text(stringResource(R.string.how_to_make_images))
+                        }
                     }
                     Text(
                         text = stringResource(R.string.part_image_requirements),
@@ -228,6 +241,10 @@ fun DeviceEditorScreen(
         }
     }
 
+    if (showImageHelp) {
+        ImageHelpDialog(onDismiss = { showImageHelp = false })
+    }
+
     if (showDiscardDialog) {
         AlertDialog(
             onDismissRequest = { showDiscardDialog = false },
@@ -248,6 +265,153 @@ fun DeviceEditorScreen(
                 }
             },
         )
+    }
+}
+
+/**
+ * パーツ画像の作り方。
+ *
+ * 使い方を別に用意せずアプリ内で完結させたいので、必要なことはここに全部書く。
+ * 一方でボタンの下に全文を出すと読まれないため、短い案内だけ常に見せ、
+ * 詳細は開いたときに出す形にしている。
+ */
+@Composable
+private fun ImageHelpDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.image_help_title)) },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(stringResource(R.string.image_help_intro))
+
+                ImageHelpIllustration()
+
+                HelpStep(R.string.image_help_step1_title, R.string.image_help_step1)
+                HelpStep(R.string.image_help_step2_title, R.string.image_help_step2)
+                HelpStep(R.string.image_help_step3_title, R.string.image_help_step3)
+                HelpStep(R.string.image_help_step4_title, R.string.image_help_step4)
+                HelpStep(R.string.image_help_step5_title, R.string.image_help_step5)
+
+                HorizontalDivider()
+                Text(
+                    text = stringResource(R.string.image_help_format),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = stringResource(R.string.image_help_order),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.ok)) }
+        },
+    )
+}
+
+/**
+ * 「1枚の絵を部分ごとに分ける」を図で見せる。
+ *
+ * 文章だけだと伝わりにくいところなので、組み込みAブレースの実画像をそのまま使う。
+ * パーツ層は白いシルエットなので、そのままでは白地に見えない。ここでは仕組みが分かるよう
+ * わざと別々の色で塗って並べ、最後に同じ4枚を重ねた結果を出している。
+ * 新しい画像アセットは足していない。
+ */
+@Composable
+private fun ImageHelpIllustration(modifier: Modifier = Modifier) {
+    // 面積のあるパーツを選ぶ。ボタンや糸のような細かい層はこの大きさでは見えない。
+    val samples = listOf(
+        Triple(R.drawable.a1, R.string.plastic, PART_SAMPLE_PLASTIC),
+        Triple(R.drawable.a2, R.string.sponge, PART_SAMPLE_SPONGE),
+        Triple(R.drawable.a3, R.string.belt1, PART_SAMPLE_BELT),
+        Triple(R.drawable.a11, R.string.line_art, null),
+    )
+
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = stringResource(R.string.image_help_parts_label),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            samples.forEach { (image, labelRes, tint) ->
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    HelpImageBox(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
+                        HelpLayer(image, tint)
+                    }
+                    Text(
+                        text = stringResource(labelRes),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+
+        Text(
+            text = stringResource(R.string.image_help_stacked_label),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        HelpImageBox(
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .aspectRatio(1f)
+                .align(Alignment.CenterHorizontally),
+        ) {
+            // 上で見せた4枚をそのまま重ねる。並びが描画順で、線画が一番手前。
+            samples.forEach { (image, _, tint) -> HelpLayer(image, tint) }
+        }
+    }
+}
+
+/** 図の1コマ。配色プレビューと同じ下地にして、同じものを見ていると分かるようにする。 */
+@Composable
+private fun HelpImageBox(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(PreviewCanvas)
+            .border(1.dp, PreviewCanvasOutline, RoundedCornerShape(6.dp))
+            .padding(2.dp),
+        content = content,
+    )
+}
+
+@Composable
+private fun HelpLayer(image: Int, tint: Color?) {
+    Image(
+        painter = painterResource(image),
+        contentDescription = null,
+        colorFilter = tint?.let(ColorFilter::tint),
+        contentScale = ContentScale.Fit,
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+
+// 図のためだけの色。仕組みが分かるよう互いに離れた色を選んでいる。
+private val PART_SAMPLE_PLASTIC = Color(0xFFF19CA7)
+private val PART_SAMPLE_SPONGE = Color(0xFF7FFFD4)
+private val PART_SAMPLE_BELT = Color(0xFF87CEFA)
+
+@Composable
+private fun HelpStep(titleRes: Int, bodyRes: Int) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = stringResource(titleRes),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(stringResource(bodyRes), style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -353,6 +517,7 @@ private fun LayerCard(
                     value = layer.name,
                     onValueChange = onNameChange,
                     label = { Text(stringResource(R.string.part_name)) },
+                    placeholder = { Text(stringResource(R.string.part_name_hint)) },
                     singleLine = true,
                     isError = layer.name.isBlank(),
                     modifier = Modifier.fillMaxWidth(),

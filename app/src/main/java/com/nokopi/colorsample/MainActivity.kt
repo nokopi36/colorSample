@@ -1,134 +1,97 @@
 package com.nokopi.colorsample
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.nokopi.colorsample.databinding.ActivityMainBinding
-import kotlin.Exception
+import com.nokopi.colorsample.navigation.ColorSampleNavDisplay
+import com.nokopi.colorsample.ui.theme.ColorSampleTheme
 
-class MainActivity : AppCompatActivity() {
+private const val PRIVACY_POLICY_URL =
+    "https://qiita.com/nokopi/private/610b9ee0ca4986d59b8d"
 
-    private val MY_REQUEST_CODE = 1
-    private lateinit var binding: ActivityMainBinding
+/**
+ * アプリ唯一の Activity。画面遷移は Navigation 3 (NavDisplay) が持つ。
+ */
+class MainActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+    private lateinit var appUpdateManager: AppUpdateManager
 
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-
-// Returns an intent object that you use to check for an update.
-        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
-// Checks that the platform will allow the specified type of update.
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                // This example applies an immediate update. To apply a flexible update
-                // instead, pass in AppUpdateType.FLEXIBLE
-                && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)
-            ) {
-                // Request the update.
-                appUpdateManager.startUpdateFlowForResult(
-                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
-                    appUpdateInfo,
-                    // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
-                    IMMEDIATE,
-                    // The current activity making the update request.
-                    this,
-                    // Include a request code to later monitor this update request.
-                    MY_REQUEST_CODE)
-            }
+    private val updateLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            Toast.makeText(this, R.string.update_completed, Toast.LENGTH_SHORT).show()
+        } else {
+            // 中断された場合は onResume 側で再開を試みる。
+            Log.w(TAG, "アプリ内アップデートが完了しませんでした: resultCode=${result.resultCode}")
         }
-
-        val version: String
-        try {
-            val packageName = packageName
-            val packageInfo = packageManager.getPackageInfo(packageName, 0)
-            version = packageInfo.versionName
-            "ver.$version".also { binding.versionName.text = it }
-        } catch (e: Exception){
-            e.printStackTrace()
-        }
-
-        binding.nbButton.setOnClickListener {
-            val nbIntent = Intent(this, NBCustomColor::class.java)
-            startActivity(nbIntent)
-        }
-
-        binding.ftnButton.setOnClickListener {
-            val ftnIntent = Intent(this, FTNCustomColor::class.java)
-            startActivity(ftnIntent)
-        }
-
-        binding.slbButton.setOnClickListener {
-            val slbIntent = Intent(this, SLBCustomColor::class.java)
-            startActivity(slbIntent)
-        }
-
-        binding.plButton.setOnClickListener {
-            val plIntent = Intent(this, PLCustomColor::class.java)
-            startActivity(plIntent)
-        }
-
-        binding.pogoButton.setOnClickListener {
-            val pogoIntent = Intent(this, POGOCustomColor::class.java)
-            startActivity(pogoIntent)
-        }
-
-        binding.aButton.setOnClickListener{
-            val aIntent = Intent(this, ACustomColor::class.java)
-            startActivity(aIntent)
-        }
-
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                Log.e("MY_APP", "Update flow failed! Result code: $resultCode")
-                // If the update is cancelled or fails,
-                // you can request to start the update again.
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            if (info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                info.isUpdateTypeAllowed(IMMEDIATE)
+            ) {
+                startImmediateUpdate(info)
             }
-            if (resultCode == RESULT_OK){
-                Toast.makeText(this, "Update Complete", Toast.LENGTH_SHORT).show()
+        }
+
+        setContent {
+            ColorSampleTheme {
+                ColorSampleNavDisplay(
+                    versionName = BuildConfig.VERSION_NAME,
+                    onOpenPrivacyPolicy = ::openPrivacyPolicy,
+                )
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-
-        appUpdateManager
-            .appUpdateInfo
-            .addOnSuccessListener { appUpdateInfo ->
-                if (appUpdateInfo.updateAvailability()
-                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-                ) {
-                    // If an in-app update is already running, resume the update.
-                    appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        IMMEDIATE,
-                        this,
-                        MY_REQUEST_CODE
-                    )
-                }
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            if (info.updateAvailability() ==
+                UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+            ) {
+                // 中断されたアップデートを再開する。
+                startImmediateUpdate(info)
             }
+        }
     }
 
-    fun gotoPrivacyPolicy(view: View) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://qiita.com/nokopi/private/610b9ee0ca4986d59b8d"))
-        startActivity(intent)
+    private fun startImmediateUpdate(info: AppUpdateInfo) {
+        appUpdateManager.startUpdateFlowForResult(
+            info,
+            updateLauncher,
+            AppUpdateOptions.newBuilder(IMMEDIATE).build(),
+        )
     }
 
+    private fun openPrivacyPolicy() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, PRIVACY_POLICY_URL.toUri()))
+        } catch (e: ActivityNotFoundException) {
+            Log.e(TAG, "プライバシーポリシーを開けるアプリがありません", e)
+        }
+    }
+
+    private companion object {
+        const val TAG = "MainActivity"
+    }
 }

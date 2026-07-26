@@ -13,3 +13,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea
+
+# ビルド成果物
+/app/release
+
+# 誤って作られがちなもの
+node_modules
+
+# リリース署名の鍵とパスワード。絶対にコミットしない
+keystore.properties
+*.jks
+*.keystore

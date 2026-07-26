@@ -1,0 +1,65 @@
+[versions]
+# Navigation 3 (と、それが引き込む activity 1.12) が AGP 8.9.1 以上を要求する。
+# AGP 9 系の破壊的変更を避けるため 8 系の最新安定版に留めている。
+agp = "8.13.2"
+kotlin = "2.1.0"
+
+compileSdk = "36"
+# Navigation 3 が引き込む Compose 1.10 が minSdk 23 を要求するため 21 から引き上げ。
+minSdk = "23"
+targetSdk = "36"
+versionCode = "21"
+versionName = "2.0"
+
+coreKtx = "1.16.0"
+activityCompose = "1.12.0"
+# lifecycle 2.11 は AGP 9.1 以上を要求するため 2.10 系に留める。
+lifecycle = "2.10.0"
+navigation3 = "1.1.4"
+composeBom = "2026.06.01"
+appUpdate = "2.1.0"
+fragment = "1.8.5"
+datastore = "1.1.7"
+kotlinxSerialization = "1.7.3"
+
+junit = "4.13.2"
+androidxJunit = "1.2.1"
+espresso = "3.6.1"
+coroutines = "1.8.1"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+# material3 1.4 以降 icons は推移依存に入らないので明示的に足す。
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+
+play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+# Navigation 3 のキーは @Serializable であることでバックスタックが復元される。
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose の Theme.kt のダーク background と揃えた起動時の下地色 -->
+    <color name="window_background">#17130C</color>
+</resources>

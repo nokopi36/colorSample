@@ -1,31 +1,174 @@
 <resources>
     <string name="app_name">O Color Design</string>
-    <string name="image1">image!</string>
-    <string name="image2">image2</string>
-    <string name="image3">image3</string>
-    <string name="image4">image4</string>
-    <string name="image5">image5</string>
-    <string name="image6">image6</string>
-    <string name="image7">image7</string>
-    <string name="image8">image8</string>
-    <string name="image9">image9</string>
+
+    <!-- 装具 -->
     <string name="nb">ナイトブレース</string>
     <string name="ftn">フットプレート</string>
     <string name="slb">SLB</string>
     <string name="pl">プレーリーくん</string>
+    <string name="pogo">ポーゴスティック</string>
+    <string name="a">Aブレース</string>
+
+    <!-- パーツ -->
     <string name="plastic">プラスチック</string>
     <string name="belt">ベルト</string>
-    <string name="utibari">内張り</string>
+    <string name="belt1">ベルト1</string>
+    <string name="belt2">ベルト2</string>
+    <string name="belt3">ベルト3</string>
+    <string name="belt4">ベルト4</string>
+    <string name="belt5">ベルト5</string>
     <string name="sponge">スポンジ</string>
     <string name="felt">フェルト</string>
-    <string name="leather">革</string>
     <string name="string">糸</string>
     <string name="kan">カン</string>
     <string name="button">ボタン</string>
-    <string name="back">戻る</string>
-    <string name="privacyPolicy">プライバシーポリシー</string>
-    <string name="shoeSole">靴底</string>
+    <string name="body">本体</string>
+    <string name="kahuband">カフバンド</string>
+    <string name="ankle_band">足首バンド</string>
+    <string name="shoe_sole">靴底</string>
+    <string name="line_art">線画</string>
+
+    <!-- 色 -->
+    <string name="color_white">白</string>
+    <string name="color_black">黒</string>
+    <string name="color_red">赤</string>
+    <string name="color_blue">青</string>
+    <string name="color_light_blue">水色</string>
+    <string name="color_navy">紺</string>
+    <string name="color_green">緑</string>
+    <string name="color_yellow_green">黄緑</string>
+    <string name="color_yellow">黄</string>
+    <string name="color_orange">オレンジ</string>
+    <string name="color_pink">ピンク</string>
+    <string name="color_purple">紫</string>
+    <string name="color_beige">ベージュ</string>
+    <string name="color_brown">茶</string>
+    <string name="color_mint">ミント</string>
+
+    <!-- パレット（色の管理画面での区分名） -->
+    <string name="palette_leather">革</string>
+    <string name="palette_plastic">プラスチック（プレーリーくん）</string>
+    <string name="palette_orthosis_plastic">プラスチック</string>
+    <string name="palette_sponge">スポンジ</string>
+    <string name="palette_pl_sponge">スポンジ（プレーリーくん）</string>
+    <string name="palette_band">バンド</string>
+    <string name="palette_string">糸</string>
+    <string name="palette_button">ボタン</string>
+    <string name="palette_white_black">白黒（フェルト・靴底・カン）</string>
+
+    <!-- 色の管理 -->
+    <string name="manage_colors">色の管理</string>
+    <string name="add_color">色を追加</string>
+    <string name="edit_color">色を編集</string>
+    <string name="delete_color">削除</string>
+    <string name="color_name">色の名前</string>
+    <string name="color_name_required">名前を入力してください</string>
+    <string name="built_in_color">組み込み</string>
+    <string name="built_in_not_editable">組み込みの色は編集できません</string>
+    <string name="color_deleted">「%1$s」を削除しました</string>
+    <string name="undo">元に戻す</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save_color">保存</string>
+    <string name="no_user_colors">まだ追加した色はありません</string>
+    <string name="hue">色相</string>
+    <string name="saturation">彩度</string>
+    <string name="brightness">明度</string>
+    <string name="hex_color">16進</string>
+    <string name="hex_color_hint">例 #F5B2B2</string>
+    <string name="hex_color_invalid">#RRGGBB の形で入力してください</string>
+
+    <!-- 色グループ -->
+    <string name="add_palette">グループを追加</string>
+    <string name="rename_palette">名前を変更</string>
+    <string name="delete_palette">グループを削除</string>
+    <string name="palette_name">グループの名前</string>
+    <string name="palette_name_required">名前を入力してください</string>
+    <string name="palette_name_hint">素材の区分名を入れてください（例: マジックテープ）</string>
+    <string name="first_color_of">「%1$s」の最初の色</string>
+    <string name="next">次へ</string>
+    <string name="ok">OK</string>
+    <string name="palette_in_use_title">「%1$s」は削除できません</string>
+    <string name="palette_in_use_message">以下の装具がこのグループを使っています。先に装具側の割り当てを変えてください。</string>
+    <string name="palette_in_use_entry">・%1$s（%2$s）</string>
+
+    <!-- 組み込み色の非表示 -->
+    <string name="hide_color">非表示</string>
+    <string name="color_hidden">「%1$s」を非表示にしました</string>
+    <string name="hidden_colors_count">非表示にした色 %1$d件</string>
+    <string name="restore_hidden_colors">戻す</string>
+
+    <!-- 装具の追加・編集 -->
+    <string name="add_device">装具を追加</string>
+    <string name="edit_device">装具を編集</string>
+    <string name="delete_device">装具を削除</string>
+    <string name="save_device">保存</string>
+    <string name="device_name">装具の名前</string>
+    <string name="pick_part_images">パーツ画像を選ぶ</string>
+    <string name="part_image_requirements">色を変えたい部分ごとに分けた画像を選びます。すべて同じ大きさで、背景が透明なPNGにしてください。</string>
+    <string name="how_to_make_images">画像の作り方</string>
+
+    <!-- 画像の作り方（アプリ内で完結させるための説明） -->
+    <string name="image_help_title">パーツ画像の作り方</string>
+    <string name="image_help_intro">このアプリは、装具の絵を色を変えたい部分ごとに分けた画像を重ねて表示し、部分ごとに色を塗り替えます。組み込みの装具（Aブレースなど）も同じ作りです。</string>
+    <string name="image_help_parts_label">パーツごとの画像（Aブレースの例）</string>
+    <string name="image_help_stacked_label">重ねるとこうなります</string>
+    <string name="image_help_and_more">ほか</string>
+    <string name="image_help_step1_title">1. 色を変えたい部分ごとに分ける</string>
+    <string name="image_help_step1">たとえばAブレースなら、プラスチック・ベルト・ボタン・糸のように分けます。</string>
+    <string name="image_help_step2_title">2. 1つの部分を1枚の画像にする</string>
+    <string name="image_help_step2">その部分だけを描き、残りは透明にします。背景も透明にしてください。</string>
+    <string name="image_help_step3_title">3. 色を変える部分は1色でぬりつぶす</string>
+    <string name="image_help_step3">アプリが塗り替えると、その部分は選んだ色だけになります。影やグラデーションを描いても残りません。白一色でぬりつぶしておくのが分かりやすいです。</string>
+    <string name="image_help_step4_title">4. 輪郭線は別の1枚にする</string>
+    <string name="image_help_step4">線や、色を変えたくない金具などをまとめた画像を用意し、取り込んだあとに「色を変えない」を選びます。何枚でも置けます。</string>
+    <string name="image_help_step5_title">5. すべて同じ大きさで書き出す</string>
+    <string name="image_help_step5">ぴったり重ねて表示するので、大きさが違うと位置が合いません。同じキャンバスから書き出してください。</string>
+    <string name="image_help_format">形式は背景が透明なPNGです。JPEGは透明を持てないため使えません。大きすぎる画像は自動で縮小します。</string>
+    <string name="image_help_order">取り込んだあと、一覧の並びが重なる順番になります。上が奥、下が手前です。▲▼ で入れ替えられます。</string>
+
+    <string name="part_name">パーツ名</string>
+    <string name="part_name_hint">例: ベルト1</string>
+    <string name="part_palette">この部分で選べる色</string>
+    <string name="dont_tint_layer">色を変えない（輪郭線など）</string>
+    <string name="layer_position">%1$d / %2$d 枚目 ・ 上が奥、下が手前</string>
+    <string name="move_layer_up">奥へ移動</string>
+    <string name="move_layer_down">手前へ移動</string>
+    <string name="remove_layer">このパーツを外す</string>
+    <string name="discard_changes_title">編集をやめますか？</string>
+    <string name="discard_changes_message">保存していない内容は失われます。</string>
+    <string name="discard">やめる</string>
+    <string name="delete_device_title">「%1$s」を削除しますか？</string>
+    <string name="delete_device_message">取り込んだ画像もまとめて削除されます。この操作は取り消せません。</string>
+    <string name="delete">削除</string>
+    <string name="device_save_failed">装具を保存できませんでした</string>
+    <string name="no_user_devices">「装具を追加」から装具を登録できます</string>
+    <string name="hide_device">非表示</string>
+    <string name="hidden_devices">非表示にした装具 %1$d件</string>
+    <string name="hidden_devices_title">非表示にした装具</string>
+    <string name="no_visible_devices">すべての装具を非表示にしています。右上のメニューから戻せます。</string>
+
+    <!-- 画像を弾いたときの理由。何が起きたかと、次にどうすればよいかを書く -->
+    <string name="reject_not_transparent_png">背景が透明なPNGを選んでください。JPEGは透明を持てないため使えません。</string>
+    <string name="reject_size_mismatch">大きさが違うので重ねられません（1枚目 %1$s / この画像 %2$s）。同じ大きさで書き出してください。</string>
+    <string name="reject_empty">全体が透明で、何も描かれていません。パーツが描かれた画像を選んでください。</string>
+    <string name="reject_unreadable">この画像は読み込めませんでした。別の画像で試してください。</string>
+
+    <!-- 画面 -->
     <string name="name">氏名</string>
-    <string name="pogo">ポーゴスティック</string>
-    <string name="a">Aブレース</string>
+    <string name="privacyPolicy">プライバシーポリシー</string>
+    <string name="version_format">ver.%1$s</string>
+    <string name="back">戻る</string>
+    <string name="more_options">その他</string>
+    <string name="reset">リセット</string>
+    <string name="save">保存</string>
+    <string name="share">共有</string>
+    <string name="preview_description">%1$sの配色プレビュー</string>
+    <string name="share_chooser_title">配色を共有</string>
+
+    <!-- 通知 -->
+    <string name="save_succeeded">ギャラリーに保存しました</string>
+    <string name="save_failed">保存に失敗しました</string>
+    <string name="share_failed">共有に失敗しました</string>
+    <string name="storage_permission_denied">保存するにはストレージへのアクセス許可が必要です</string>
+    <string name="update_completed">アップデートが完了しました</string>
 </resources>

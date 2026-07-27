@@ -45,3 +45,12 @@ value class PartId(val value: String)
 value class DeviceId(val value: String) {
     val isBuiltIn: Boolean get() = value.startsWith(BUILT_IN_PREFIX)
 }
+
+/**
+ * 保存した配色の識別子。
+ *
+ * 配色はユーザーが作るものしかないので、接頭辞での組み込み判定は要らない。
+ */
+@Serializable
+@JvmInline
+value class SchemeId(val value: String)

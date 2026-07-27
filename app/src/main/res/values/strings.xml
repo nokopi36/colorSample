@@ -66,6 +66,10 @@
     <string name="built_in_color">組み込み</string>
     <string name="built_in_not_editable">組み込みの色は編集できません</string>
     <string name="color_deleted">「%1$s」を削除しました</string>
+    <string name="color_deleted_with_schemes">「%1$s」を削除しました（配色%2$d件の色が変わりました）</string>
+    <string name="color_in_use_title">「%1$s」を使っている配色があります</string>
+    <string name="color_in_use_message">削除すると、以下の配色の色がグループの先頭の色に変わります。取り消せるのは削除直後の「元に戻す」だけです。</string>
+    <string name="color_in_use_entry">・%1$s（%2$s）</string>
     <string name="undo">元に戻す</string>
     <string name="cancel">キャンセル</string>
     <string name="save_color">保存</string>
@@ -165,10 +169,24 @@
     <string name="preview_description">%1$sの配色プレビュー</string>
     <string name="share_chooser_title">配色を共有</string>
 
+    <!-- 保存した配色 -->
+    <string name="saved_schemes">保存した配色</string>
+    <string name="save_scheme">配色を保存</string>
+    <string name="save_scheme_as_new">別名で保存</string>
+    <string name="overwrite_scheme">上書き保存</string>
+    <string name="rename_scheme">名前を変更</string>
+    <string name="delete_scheme">削除</string>
+    <string name="scheme_name">配色の名前</string>
+    <string name="scheme_part_color">%1$s: %2$s</string>
+    <string name="delete_scheme_title">「%1$s」を削除しますか？</string>
+    <string name="delete_scheme_message">この操作は取り消せません。</string>
+    <string name="no_saved_schemes">配色画面の「配色を保存」で、色の組み合わせを名前を付けて残せます。</string>
+
     <!-- 通知 -->
     <string name="save_succeeded">ギャラリーに保存しました</string>
     <string name="save_failed">保存に失敗しました</string>
     <string name="share_failed">共有に失敗しました</string>
     <string name="storage_permission_denied">保存するにはストレージへのアクセス許可が必要です</string>
     <string name="update_completed">アップデートが完了しました</string>
+    <string name="scheme_saved">配色を保存しました</string>
 </resources>

@@ -8,6 +8,7 @@ import com.nokopi.colorsample.data.model.ColorId
 import com.nokopi.colorsample.data.model.Palette
 import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.data.model.PaletteUsage
+import com.nokopi.colorsample.data.model.SavedScheme
 import com.nokopi.colorsample.data.store.StoredColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,8 +23,16 @@ import kotlinx.coroutines.launch
 sealed interface Undoable {
     val name: String
 
-    /** ユーザーの色を削除した。 */
-    data class ColorDeleted(val stored: StoredColor, override val name: String) : Undoable
+    /**
+     * ユーザーの色を削除した。
+     *
+     * @property affectedSchemes この削除で色が変わった保存済み配色の件数。0 なら案内に出さない。
+     */
+    data class ColorDeleted(
+        val stored: StoredColor,
+        override val name: String,
+        val affectedSchemes: Int = 0,
+    ) : Undoable
 
     /** 色を一覧から外した。 */
     data class ColorHidden(
@@ -35,6 +44,19 @@ sealed interface Undoable {
 
 /** グループを削除できなかったときに出す内容。 */
 data class PaletteInUse(val palette: Palette, val usages: List<PaletteUsage>)
+
+/**
+ * 削除しようとした色を、保存した配色が使っている。
+ *
+ * グループ削除と違って**拒否はしない**。色は正当に引退させるものなので、
+ * 何が変わるかを見せたうえで進ませる。
+ */
+data class ColorInUse(
+    val paletteId: PaletteId,
+    val colorId: ColorId,
+    val name: String,
+    val schemes: List<SavedScheme>,
+)
 
 class ManageColorsViewModel(
     private val repository: CatalogRepository,
@@ -54,6 +76,9 @@ class ManageColorsViewModel(
     private val _paletteInUse = MutableStateFlow<PaletteInUse?>(null)
     val paletteInUse: StateFlow<PaletteInUse?> = _paletteInUse.asStateFlow()
 
+    private val _colorInUse = MutableStateFlow<ColorInUse?>(null)
+    val colorInUse: StateFlow<ColorInUse?> = _colorInUse.asStateFlow()
+
     // ---- 色 ------------------------------------------------------------
 
     fun addColor(paletteId: PaletteId, name: String, color: Color) {
@@ -64,9 +89,40 @@ class ManageColorsViewModel(
         viewModelScope.launch { repository.updateColor(id, name, color) }
     }
 
-    fun deleteColor(id: ColorId, name: String) {
+    /**
+     * ユーザーが足した色を削除する。
+     *
+     * 保存した配色が使っている場合は、消す前に何が変わるかを見せる。非表示と違って
+     * スナックバーの「元に戻す」を逃すと戻せず、色を作り直しても ID が変わるため
+     * 配色の参照は復活しない。
+     */
+    fun deleteColor(paletteId: PaletteId, colorId: ColorId, name: String) {
         viewModelScope.launch {
-            repository.deleteColor(id)?.let { _undoable.value = Undoable.ColorDeleted(it, name) }
+            val schemes = repository.catalog.first().schemesUsing(paletteId, colorId)
+            if (schemes.isEmpty()) {
+                performDeleteColor(colorId, name, affectedSchemes = 0)
+            } else {
+                _colorInUse.value = ColorInUse(paletteId, colorId, name, schemes)
+            }
+        }
+    }
+
+    /** 確認ダイアログで「削除」を選んだとき。 */
+    fun confirmDeleteColor() {
+        val target = _colorInUse.value ?: return
+        _colorInUse.value = null
+        viewModelScope.launch {
+            performDeleteColor(target.colorId, target.name, target.schemes.size)
+        }
+    }
+
+    fun dismissColorInUse() {
+        _colorInUse.value = null
+    }
+
+    private suspend fun performDeleteColor(id: ColorId, name: String, affectedSchemes: Int) {
+        repository.deleteColor(id)?.let {
+            _undoable.value = Undoable.ColorDeleted(it, name, affectedSchemes)
         }
     }
 

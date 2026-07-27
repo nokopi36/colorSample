@@ -27,6 +27,8 @@ data class StoredCatalog(
      * 色と同じく定義は残るのでいつでも戻せる。
      */
     val hiddenDevices: List<String> = emptyList(),
+    /** ユーザーが名前を付けて残した配色。新しいものほど後ろ。 */
+    val schemes: List<StoredScheme> = emptyList(),
 ) {
     companion object {
         const val CURRENT_VERSION = 1
@@ -74,6 +76,27 @@ data class StoredDevice(
     val id: String,
     val name: String,
     val parts: List<StoredPart> = emptyList(),
+)
+
+/**
+ * 名前を付けて残した配色。
+ *
+ * 画像として書き出すだけだと「どの色を使ったか」が後から分からないので、
+ * パーツごとの色を ID のまま持っておき、開き直せるようにする。
+ *
+ * 参照する ID はすべて文字列。組み込みのものも `builtin:` 付きの安定した文字列なので
+ * 保存してよい（`hiddenColors` が既に同じことをしている）。リソースIDは持たない。
+ *
+ * @property selections パーツID -> 色ID。装具側にあとからレイヤーが増えても、
+ *   足りないぶんはパレット先頭に落ちるだけで壊れない。
+ */
+@Serializable
+data class StoredScheme(
+    val id: String,
+    val deviceId: String,
+    val name: String,
+    val personName: String = "",
+    val selections: Map<String, String> = emptyMap(),
 )
 
 /**

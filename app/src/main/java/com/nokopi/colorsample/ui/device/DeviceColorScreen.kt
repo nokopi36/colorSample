@@ -38,8 +38,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -53,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nokopi.colorsample.R
 import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.data.model.resolve
+import com.nokopi.colorsample.ui.scheme.SchemeNameDialog
 import com.nokopi.colorsample.util.ImageExport
 import kotlinx.coroutines.launch
 
@@ -104,8 +107,12 @@ private fun DeviceColorContent(
     val snackbarHostState = remember { SnackbarHostState() }
     val graphicsLayer = rememberGraphicsLayer()
 
+    // 名前を聞くダイアログ。true なら既存の配色への上書き。
+    var pendingSchemeSave by remember { mutableStateOf<Boolean?>(null) }
+
     val deviceLabel = state.device.label.resolve()
     val savedMessage = stringResource(R.string.save_succeeded)
+    val schemeSavedMessage = stringResource(R.string.scheme_saved)
     val saveFailedMessage = stringResource(R.string.save_failed)
     val shareFailedMessage = stringResource(R.string.share_failed)
     val permissionDeniedMessage = stringResource(R.string.storage_permission_denied)
@@ -233,7 +240,35 @@ private fun DeviceColorContent(
                             .fillMaxWidth()
                             .padding(top = 4.dp),
                     )
+
+                    SchemeButtons(
+                        // 開いているのが保存済みの配色なら、上書きと別名保存を出し分ける。
+                        isSaved = state.schemeName != null,
+                        onOverwrite = { pendingSchemeSave = true },
+                        onSaveAsNew = { pendingSchemeSave = false },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
+            }
+
+            pendingSchemeSave?.let { overwrite ->
+                SchemeNameDialog(
+                    title = stringResource(
+                        if (overwrite) R.string.overwrite_scheme else R.string.save_scheme,
+                    ),
+                    // 上書きなら今の名前、新規なら氏名を下敷きにする。氏名が空なら装具名。
+                    initialName = when {
+                        overwrite -> state.schemeName.orEmpty()
+                        state.personName.isNotBlank() -> state.personName
+                        else -> deviceLabel
+                    },
+                    onConfirm = { name ->
+                        pendingSchemeSave = null
+                        viewModel.saveScheme(name, overwrite = overwrite)
+                        scope.launch { snackbarHostState.showSnackbar(schemeSavedMessage) }
+                    },
+                    onDismiss = { pendingSchemeSave = null },
+                )
             }
 
             // weight を効かせるため、親には必ず高さ・幅を与えておく。
@@ -252,6 +287,40 @@ private fun DeviceColorContent(
                     controls(Modifier.fillMaxWidth().weight(0.45f))
                 }
             }
+        }
+    }
+}
+
+/**
+ * 配色そのものを名前付きで残す操作。画像の保存・共有とは別の行に置く。
+ *
+ * 保存済みの配色を開いているときだけ「上書き保存」を出す。未保存のときに2つ並べても
+ * 区別が付かないため。
+ */
+@Composable
+private fun SchemeButtons(
+    isSaved: Boolean,
+    onOverwrite: () -> Unit,
+    onSaveAsNew: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        if (isSaved) {
+            OutlinedButton(onClick = onOverwrite, modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.overwrite_scheme))
+            }
+        }
+        OutlinedButton(onClick = onSaveAsNew, modifier = Modifier.weight(1f)) {
+            Text(
+                text = if (isSaved) {
+                    stringResource(R.string.save_scheme_as_new)
+                } else {
+                    stringResource(R.string.save_scheme)
+                },
+            )
         }
     }
 }

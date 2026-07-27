@@ -92,6 +92,7 @@ fun ManageColorsScreen(
     val palettes by viewModel.palettes.collectAsStateWithLifecycle()
     val undoable by viewModel.undoable.collectAsStateWithLifecycle()
     val paletteInUse by viewModel.paletteInUse.collectAsStateWithLifecycle()
+    val colorInUse by viewModel.colorInUse.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     var colorTarget by remember { mutableStateOf<ColorTarget?>(null) }
@@ -103,12 +104,19 @@ fun ManageColorsScreen(
     }
 
     val deletedTemplate = stringResource(R.string.color_deleted)
+    val deletedWithSchemesTemplate = stringResource(R.string.color_deleted_with_schemes)
     val hiddenTemplate = stringResource(R.string.color_hidden)
     val undoLabel = stringResource(R.string.undo)
     LaunchedEffect(undoable) {
         val target = undoable ?: return@LaunchedEffect
         val message = when (target) {
-            is Undoable.ColorDeleted -> deletedTemplate.format(target.name)
+            // 配色の色が変わったときは件数まで出す。気づかないまま流れるのを避ける。
+            is Undoable.ColorDeleted -> if (target.affectedSchemes > 0) {
+                deletedWithSchemesTemplate.format(target.name, target.affectedSchemes)
+            } else {
+                deletedTemplate.format(target.name)
+            }
+
             is Undoable.ColorHidden -> hiddenTemplate.format(target.name)
         }
         val result = snackbarHostState.showSnackbar(message = message, actionLabel = undoLabel)
@@ -165,7 +173,7 @@ fun ManageColorsScreen(
                         // 最後の1色は消せない。空のグループは表示も操作もできないため。
                         canRemove = palette.options.size > 1,
                         onEdit = { colorTarget = ColorTarget.Existing(option) },
-                        onDelete = { name -> viewModel.deleteColor(option.id, name) },
+                        onDelete = { name -> viewModel.deleteColor(palette.id, option.id, name) },
                         onHide = { name -> viewModel.hideColor(palette.id, option.id, name) },
                     )
                 }
@@ -285,6 +293,39 @@ fun ManageColorsScreen(
             confirmButton = {
                 TextButton(onClick = viewModel::dismissPaletteInUse) {
                     Text(stringResource(R.string.ok))
+                }
+            },
+        )
+    }
+
+    // グループ削除と違い、こちらは拒否ではなく確認。消したあと何が変わるかを見せて進ませる。
+    colorInUse?.let { inUse ->
+        AlertDialog(
+            onDismissRequest = viewModel::dismissColorInUse,
+            title = { Text(stringResource(R.string.color_in_use_title, inUse.name)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(stringResource(R.string.color_in_use_message))
+                    inUse.schemes.forEach { scheme ->
+                        Text(
+                            text = stringResource(
+                                R.string.color_in_use_entry,
+                                scheme.name,
+                                scheme.device.label.resolve(),
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = viewModel::confirmDeleteColor) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissColorInUse) {
+                    Text(stringResource(R.string.cancel))
                 }
             },
         )

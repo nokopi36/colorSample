@@ -86,6 +86,30 @@ data class Device(
     val tintedParts: List<PartSpec> get() = parts.filter { it.isTinted }
 }
 
+/** 保存した配色の、パーツ1つ分の割り当て。 */
+@Immutable
+data class SchemeSelection(val part: PartSpec, val option: ColorOption)
+
+/**
+ * 名前を付けて残した配色。参照はすべて解決済みで、そのまま表示に使える。
+ *
+ * 画像として書き出すだけでは色名が残らないので、一覧で色名まで見せるためにこの形にする。
+ *
+ * @property selections 描画順に並んだ、色を選べるパーツとその色。
+ */
+@Immutable
+data class SavedScheme(
+    val id: SchemeId,
+    val device: Device,
+    val name: String,
+    val personName: String,
+    val selections: List<SchemeSelection>,
+) {
+    /** 配色画面の初期値に渡す形。 */
+    val selectionIds: Map<String, String>
+        get() = selections.associate { it.part.id.value to it.option.id.value }
+}
+
 /** 画面に渡すカタログ全体。 */
 @Immutable
 data class Catalog(
@@ -96,6 +120,11 @@ data class Catalog(
      * 戻す操作のために内容ごと持っておく。
      */
     val hiddenDevices: List<Device> = emptyList(),
+    /**
+     * 保存した配色。参照先の装具が消えている・非表示になっているものは含まれない。
+     * 開けない配色を一覧に出しても [Device] を引けず、配色画面が即座に戻ってしまうため。
+     */
+    val schemes: List<SavedScheme> = emptyList(),
 ) {
     private val paletteById = palettes.associateBy { it.id }
 
@@ -104,6 +133,24 @@ data class Catalog(
     }
 
     fun device(id: DeviceId): Device? = devices.firstOrNull { it.id == id }
+
+    fun scheme(id: SchemeId): SavedScheme? = schemes.firstOrNull { it.id == id }
+
+    /** その装具に紐づく配色。配色画面から「この装具の保存済み」を出すときに使う。 */
+    fun schemesOf(deviceId: DeviceId): List<SavedScheme> =
+        schemes.filter { it.device.id == deviceId }
+
+    /**
+     * その色を使っている保存した配色。
+     *
+     * 色を消すと配色の色が黙って変わる（[Palette.optionOrFirst] が先頭に落とす）ので、
+     * 消す前に確認を出すために使う。組み込みの色は複数グループで共有されているため、
+     * 色だけでなく**グループも合わせて**見る。革の白を消してもボタンの白を使う配色は無関係。
+     */
+    fun schemesUsing(paletteId: PaletteId, colorId: ColorId): List<SavedScheme> =
+        schemes.filter { scheme ->
+            scheme.selections.any { it.part.paletteId == paletteId && it.option.id == colorId }
+        }
 
     /**
      * そのグループを使っている装具とパーツ。

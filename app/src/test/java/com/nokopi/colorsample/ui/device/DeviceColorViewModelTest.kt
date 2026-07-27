@@ -3,13 +3,16 @@ package com.nokopi.colorsample.ui.device
 import androidx.lifecycle.SavedStateHandle
 import com.nokopi.colorsample.data.BuiltInCatalog
 import com.nokopi.colorsample.data.CatalogMerger
+import com.nokopi.colorsample.data.SchemeSave
 import com.nokopi.colorsample.data.model.Catalog
 import com.nokopi.colorsample.data.model.ColorId
 import com.nokopi.colorsample.data.model.DeviceId
+import com.nokopi.colorsample.data.model.SchemeId
 import com.nokopi.colorsample.data.store.StoredCatalog
 import com.nokopi.colorsample.data.store.StoredColor
 import com.nokopi.colorsample.data.store.StoredDevice
 import com.nokopi.colorsample.data.store.StoredPart
+import com.nokopi.colorsample.data.store.StoredScheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,11 +47,24 @@ class DeviceColorViewModelTest {
     private fun catalogOf(stored: StoredCatalog = StoredCatalog.EMPTY) =
         MutableStateFlow(CatalogMerger.merge(stored))
 
+    /** 保存された配色を控えるだけの偽物。リポジトリは Context を要るのでここでは使わない。 */
+    private class RecordingSaver : suspend (SchemeSave) -> SchemeId {
+        val saves = mutableListOf<SchemeSave>()
+        var nextId = SchemeId("user:new")
+
+        override suspend fun invoke(save: SchemeSave): SchemeId {
+            saves += save
+            return save.id ?: nextId
+        }
+    }
+
     private fun viewModelFor(
         deviceId: DeviceId = nbId,
         catalog: MutableStateFlow<Catalog> = catalogOf(),
         saved: Map<String, Any> = emptyMap(),
-    ) = DeviceColorViewModel(deviceId, catalog, SavedStateHandle(saved))
+        schemeId: SchemeId? = null,
+        saver: RecordingSaver = RecordingSaver(),
+    ) = DeviceColorViewModel(deviceId, catalog, SavedStateHandle(saved), schemeId, saver)
 
     /** WhileSubscribed の StateFlow を動かすために購読だけしておく。 */
     private fun TestScope.subscribe(viewModel: DeviceColorViewModel) {
@@ -219,5 +235,150 @@ class DeviceColorViewModelTest {
         subscribe(viewModel)
 
         assertTrue(ready(viewModel).selections.all { it.selected == it.palette.options.first() })
+    }
+
+    // ---- 保存した配色 --------------------------------------------------
+
+    /** 組み込みナイトブレースの色を変えるパーツ全部を、各パレットの末尾の色にした配色。 */
+    private fun schemeCatalog(id: String = "user:s1"): StoredCatalog {
+        val merged = CatalogMerger.merge(StoredCatalog.EMPTY)
+        val device = merged.device(nbId)!!
+        val selections = device.parts
+            .mapNotNull { part -> part.paletteId?.let { part to merged.palette(it) } }
+            .associate { (part, palette) -> part.id.value to palette.options.last().id.value }
+
+        return StoredCatalog(
+            schemes = listOf(
+                StoredScheme(
+                    id = id,
+                    deviceId = nbId.value,
+                    name = "運動会",
+                    personName = "配色 太郎",
+                    selections = selections,
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `保存した配色から開くと色と氏名がその内容になる`() = runTest {
+        val viewModel = viewModelFor(
+            catalog = catalogOf(schemeCatalog()),
+            schemeId = SchemeId("user:s1"),
+        )
+        subscribe(viewModel)
+
+        val state = ready(viewModel)
+        assertEquals("配色 太郎", state.personName)
+        assertEquals("運動会", state.schemeName)
+        assertTrue(state.selections.all { it.selected == it.palette.options.last() })
+    }
+
+    /**
+     * 配色を開いて1色だけ変えたときに、残りが配色の色を失わないこと。
+     *
+     * 未操作のあいだ選択は SavedStateHandle に無いので、handle の中身（空）を土台に
+     * 差分を積むと他のパーツが全部パレット先頭に戻ってしまう。
+     */
+    @Test
+    fun `配色を開いて1色変えても他のパーツは配色のまま`() = runTest {
+        val viewModel = viewModelFor(
+            catalog = catalogOf(schemeCatalog()),
+            schemeId = SchemeId("user:s1"),
+        )
+        subscribe(viewModel)
+
+        val target = ready(viewModel).selections.first()
+        viewModel.selectColor(target.part.id, target.palette.options.first().id)
+
+        val after = ready(viewModel).selections
+        assertEquals(after.first().palette.options.first(), after.first().selected)
+        assertTrue(after.drop(1).all { it.selected == it.palette.options.last() })
+    }
+
+    @Test
+    fun `新規保存では ID を渡さず、表示中の内容がそのまま残る`() = runTest {
+        val saver = RecordingSaver()
+        val viewModel = viewModelFor(saver = saver)
+        subscribe(viewModel)
+
+        val target = ready(viewModel).selections[1]
+        val chosen = target.palette.options.last()
+        viewModel.updatePersonName("山田")
+        viewModel.selectColor(target.part.id, chosen.id)
+        viewModel.saveScheme("春の配色", overwrite = false)
+
+        val save = saver.saves.single()
+        assertEquals(null, save.id)
+        assertEquals(nbId, save.deviceId)
+        assertEquals("春の配色", save.name)
+        assertEquals("山田", save.personName)
+        // 触っていないパーツも含めて、見えているとおりの内容が保存される。
+        assertEquals(ready(viewModel).selections.size, save.selections.size)
+        assertEquals(chosen.id, save.selections[target.part.id])
+    }
+
+    @Test
+    fun `上書き保存は開いている配色の ID を渡す`() = runTest {
+        val saver = RecordingSaver()
+        val viewModel = viewModelFor(
+            catalog = catalogOf(schemeCatalog()),
+            schemeId = SchemeId("user:s1"),
+            saver = saver,
+        )
+        subscribe(viewModel)
+
+        viewModel.saveScheme("運動会", overwrite = true)
+
+        assertEquals(SchemeId("user:s1"), saver.saves.single().id)
+    }
+
+    /**
+     * 報告された手順の往復。革に足した色を選んで保存し、色の管理側の判定にかける。
+     * ViewModel が作る [SchemeSave] をリポジトリと同じ形に変換して繋ぐ。
+     */
+    @Test
+    fun `足した色を選んで保存した配色は、使用中として引ける`() = runTest {
+        val userColor = StoredColor("user:c1", leather.value, "特注", 0xFF123456.toInt())
+        val stored = StoredCatalog(colors = listOf(userColor))
+        val saver = RecordingSaver()
+        val viewModel = viewModelFor(catalog = catalogOf(stored), saver = saver)
+        subscribe(viewModel)
+
+        val target = ready(viewModel).selections.first { it.part.paletteId == leather }
+        viewModel.selectColor(target.part.id, ColorId("user:c1"))
+        viewModel.saveScheme("運動会", overwrite = false)
+
+        val save = saver.saves.single()
+        val merged = CatalogMerger.merge(
+            stored.copy(
+                schemes = listOf(
+                    StoredScheme(
+                        id = "user:s1",
+                        deviceId = save.deviceId.value,
+                        name = save.name,
+                        personName = save.personName,
+                        selections = save.selections.entries
+                            .associate { (part, color) -> part.value to color.value },
+                    ),
+                ),
+            ),
+        )
+
+        assertEquals(1, merged.schemesUsing(leather, ColorId("user:c1")).size)
+    }
+
+    /** 新規保存したあとは、そのまま続けて上書きできる。 */
+    @Test
+    fun `新規保存のあとの上書きは採番された ID を使う`() = runTest {
+        val saver = RecordingSaver().apply { nextId = SchemeId("user:generated") }
+        val viewModel = viewModelFor(saver = saver)
+        subscribe(viewModel)
+
+        viewModel.saveScheme("一回目", overwrite = false)
+        viewModel.saveScheme("二回目", overwrite = true)
+
+        assertEquals(null, saver.saves[0].id)
+        assertEquals(SchemeId("user:generated"), saver.saves[1].id)
     }
 }

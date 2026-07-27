@@ -22,6 +22,7 @@ import com.nokopi.colorsample.data.CatalogRepository
 import com.nokopi.colorsample.data.ImageImporter
 import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.model.PaletteId
+import com.nokopi.colorsample.data.model.SchemeId
 import com.nokopi.colorsample.ui.device.DeviceColorScreen
 import com.nokopi.colorsample.ui.device.DeviceColorViewModel
 import com.nokopi.colorsample.ui.deviceeditor.DeviceEditorScreen
@@ -30,6 +31,8 @@ import com.nokopi.colorsample.ui.home.HomeScreen
 import com.nokopi.colorsample.ui.home.HomeViewModel
 import com.nokopi.colorsample.ui.palette.ManageColorsScreen
 import com.nokopi.colorsample.ui.palette.ManageColorsViewModel
+import com.nokopi.colorsample.ui.scheme.SavedSchemesScreen
+import com.nokopi.colorsample.ui.scheme.SavedSchemesViewModel
 
 @Composable
 fun ColorSampleNavDisplay(
@@ -67,6 +70,7 @@ fun ColorSampleNavDisplay(
                     onHideDevice = homeViewModel::hideDevice,
                     onUnhideDevice = homeViewModel::unhideDevice,
                     onManageColors = { backStack.add(ManageColorsKey()) },
+                    onOpenSavedSchemes = { backStack.add(SavedSchemesKey) },
                     onOpenPrivacyPolicy = onOpenPrivacyPolicy,
                 )
             }
@@ -83,9 +87,21 @@ fun ColorSampleNavDisplay(
                                 deviceId = DeviceId(key.deviceId),
                                 catalog = repository.catalog,
                                 handle = createSavedStateHandle(),
+                                initialSchemeId = key.schemeId?.let(::SchemeId),
+                                persistScheme = repository::saveScheme,
                             )
                         },
                     ),
+                )
+            }
+
+            entry<SavedSchemesKey> {
+                SavedSchemesScreen(
+                    onNavigateUp = { backStack.removeLastOrNull() },
+                    onOpenScheme = {
+                        backStack.add(DeviceKey(it.device.id.value, it.id.value))
+                    },
+                    viewModel = viewModel(factory = factory { SavedSchemesViewModel(repository) }),
                 )
             }
 

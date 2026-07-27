@@ -12,8 +12,12 @@ import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.data.model.PartId
 import com.nokopi.colorsample.data.model.PartImage
 import com.nokopi.colorsample.data.model.PartSpec
+import com.nokopi.colorsample.data.model.SavedScheme
+import com.nokopi.colorsample.data.model.SchemeId
+import com.nokopi.colorsample.data.model.SchemeSelection
 import com.nokopi.colorsample.data.store.StoredCatalog
 import com.nokopi.colorsample.data.store.StoredDevice
+import com.nokopi.colorsample.data.store.StoredScheme
 
 /**
  * 組み込み定義とユーザー定義を1つの [Catalog] にまとめる。
@@ -83,10 +87,47 @@ object CatalogMerger {
         val (hiddenDevices, visibleDevices) =
             (builtInDevices + userDevices).partition { it.id in hiddenDeviceIds }
 
+        val paletteById = palettes.associateBy { it.id }
+        val deviceById = visibleDevices.associateBy { it.id }
+
         return Catalog(
             palettes = palettes,
             devices = visibleDevices,
             hiddenDevices = hiddenDevices,
+            schemes = stored.schemes.mapNotNull { it.toScheme(deviceById, paletteById) },
+        )
+    }
+
+    /**
+     * 保存した配色を解決する。
+     *
+     * 装具が見つからないものは落とす。削除された装具はもちろん、非表示にした装具の配色も
+     * ここで消える（[Catalog.device] が引けず、開いても配色画面が戻ってしまうため）。
+     * 保存側の定義は残しているので、装具を戻せば配色も戻る。
+     *
+     * 色の参照が切れている場合は [Palette.optionOrFirst] が先頭に落とす。装具に後から
+     * レイヤーが増えて保存側に無いパーツも同じ扱いになる。配色画面の挙動と揃えてある。
+     */
+    private fun StoredScheme.toScheme(
+        deviceById: Map<DeviceId, Device>,
+        paletteById: Map<PaletteId, Palette>,
+    ): SavedScheme? {
+        val device = deviceById[DeviceId(deviceId)] ?: return null
+
+        val resolved = device.parts.mapNotNull { part ->
+            val palette = part.paletteId?.let { paletteById[it] } ?: return@mapNotNull null
+            SchemeSelection(
+                part = part,
+                option = palette.optionOrFirst(selections[part.id.value]?.let(::ColorId)),
+            )
+        }
+
+        return SavedScheme(
+            id = SchemeId(id),
+            device = device,
+            name = name,
+            personName = personName,
+            selections = resolved,
         )
     }
 

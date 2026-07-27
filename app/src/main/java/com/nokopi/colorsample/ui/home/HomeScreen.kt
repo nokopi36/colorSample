@@ -70,6 +70,7 @@ fun HomeScreen(
     onHideDevice: (DeviceId) -> Unit,
     onUnhideDevice: (DeviceId) -> Unit,
     onManageColors: () -> Unit,
+    onOpenSavedSchemes: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,6 +86,7 @@ fun HomeScreen(
                     HomeOverflowMenu(
                         hiddenCount = hiddenDevices.size,
                         onManageColors = onManageColors,
+                        onOpenSavedSchemes = onOpenSavedSchemes,
                         onShowHidden = { showHidden = true },
                     )
                 },
@@ -220,6 +222,7 @@ private fun HomeFooter(
 private fun HomeOverflowMenu(
     hiddenCount: Int,
     onManageColors: () -> Unit,
+    onOpenSavedSchemes: () -> Unit,
     onShowHidden: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -231,6 +234,13 @@ private fun HomeOverflowMenu(
         )
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.saved_schemes)) },
+            onClick = {
+                expanded = false
+                onOpenSavedSchemes()
+            },
+        )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.manage_colors)) },
             onClick = {

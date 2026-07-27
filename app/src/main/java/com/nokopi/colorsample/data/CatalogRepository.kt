@@ -8,6 +8,7 @@ import com.nokopi.colorsample.data.model.ColorId
 import com.nokopi.colorsample.data.model.DeviceId
 import com.nokopi.colorsample.data.model.PaletteId
 import com.nokopi.colorsample.data.model.PartId
+import com.nokopi.colorsample.data.model.SchemeId
 import com.nokopi.colorsample.data.model.userId
 import com.nokopi.colorsample.data.store.CatalogStore
 import com.nokopi.colorsample.data.store.HiddenColor
@@ -15,6 +16,7 @@ import com.nokopi.colorsample.data.store.StoredColor
 import com.nokopi.colorsample.data.store.StoredPalette
 import com.nokopi.colorsample.data.store.StoredDevice
 import com.nokopi.colorsample.data.store.StoredPart
+import com.nokopi.colorsample.data.store.StoredScheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -39,6 +41,20 @@ data class PartSave(
     val fileName: String,
     /** null なら色を変えないレイヤー。 */
     val paletteId: PaletteId?,
+)
+
+/**
+ * 配色1件ぶんの保存内容。
+ *
+ * @property id 既存の配色を上書きするならその ID。null なら新規。
+ * @property selections パーツ -> 色。色を変えないレイヤーは含めない。
+ */
+data class SchemeSave(
+    val id: SchemeId?,
+    val deviceId: DeviceId,
+    val name: String,
+    val personName: String,
+    val selections: Map<PartId, ColorId>,
 )
 
 /**
@@ -299,6 +315,8 @@ class CatalogRepository(
                 devices = stored.devices.filterNot { it.id == id.value },
                 // 消えた装具への非表示指定は残しても意味がない。
                 hiddenDevices = stored.hiddenDevices.filterNot { it == id.value },
+                // 配色も参照先が無くなる。非表示と違い装具は戻ってこないので一緒に消す。
+                schemes = stored.schemes.filterNot { it.deviceId == id.value },
             )
         }
         withContext(Dispatchers.IO) {
@@ -325,6 +343,57 @@ class CatalogRepository(
     suspend fun unhideDevice(id: DeviceId) {
         store.update { stored ->
             stored.copy(hiddenDevices = stored.hiddenDevices.filterNot { it == id.value })
+        }
+    }
+
+    // ---- 保存した配色 --------------------------------------------------
+
+    /**
+     * 配色を保存する。[SchemeSave.id] があれば上書き、無ければ新規に追加する。
+     *
+     * 上書きのときは並び順を変えない。名前を直すたびに一覧の位置が飛ぶと探しにくいため。
+     *
+     * @return 保存した配色の ID。新規なら採番されたもの。
+     */
+    suspend fun saveScheme(save: SchemeSave): SchemeId {
+        val id = save.id ?: SchemeId(userId(UUID.randomUUID().toString()))
+        val stored = StoredScheme(
+            id = id.value,
+            deviceId = save.deviceId.value,
+            name = save.name.trim(),
+            personName = save.personName.trim(),
+            selections = save.selections.entries.associate { (part, color) ->
+                part.value to color.value
+            },
+        )
+        store.update { catalog ->
+            val index = catalog.schemes.indexOfFirst { it.id == id.value }
+            if (index >= 0) {
+                catalog.copy(
+                    schemes = catalog.schemes.toMutableList().apply { this[index] = stored },
+                )
+            } else {
+                catalog.copy(schemes = catalog.schemes + stored)
+            }
+        }
+        return id
+    }
+
+    suspend fun renameScheme(id: SchemeId, name: String) {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) return
+        store.update { stored ->
+            stored.copy(
+                schemes = stored.schemes.map {
+                    if (it.id == id.value) it.copy(name = trimmed) else it
+                },
+            )
+        }
+    }
+
+    suspend fun deleteScheme(id: SchemeId) {
+        store.update { stored ->
+            stored.copy(schemes = stored.schemes.filterNot { it.id == id.value })
         }
     }
 

@@ -12,8 +12,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object HomeKey : NavKey
 
+/**
+ * 装具の配色画面。
+ *
+ * @property schemeId 保存した配色から開いた場合のその ID。null なら初期色から始める。
+ */
 @Serializable
-data class DeviceKey(val deviceId: String) : NavKey
+data class DeviceKey(val deviceId: String, val schemeId: String? = null) : NavKey
+
+/** 保存した配色の一覧。 */
+@Serializable
+data object SavedSchemesKey : NavKey
 
 /**
  * 色の管理。

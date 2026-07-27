@@ -221,6 +221,11 @@ Android に依存しない純粋関数になりテストで固定できるし、
 
 ## その他
 
+- **プライバシーポリシーは `docs/index.html`**（GitHub Pages が master の `docs/` を公開）。実態を
+  そのまま書いた文書なので、**扱うデータが変わったら本文も直す**。とくに「解析・広告・クラッシュ
+  レポートのライブラリを組み込んでいない」「`INTERNET` を宣言していない」と明言しているので、
+  通信するライブラリを入れるならポリシーと Play Console のデータセーフティ申告も同時に変わる。
+  URL は `MainActivity.PRIVACY_POLICY_URL`・README・Play Console の3か所にある
 - アプリ内アップデートは `AppUpdateManager` + `ActivityResultContracts.StartIntentSenderForResult`
 - 保存は API 29+ が `MediaStore`、28以下は `WRITE_EXTERNAL_STORAGE` + public Pictures。
   共有は `cacheDir/OColorDesign` を root にした `FileProvider`

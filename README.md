@@ -114,6 +114,8 @@ com.nokopi.colorsample/
 - **README.md**（このファイル）— 何のアプリで、何ができて、どう動かすか
 - **CLAUDE.md** — コードを編集する前に知らないと事故る事実。守るべき不変条件、
   過去に踏んだ罠とその防ぎ方、バージョンを上げるときの制約
+- **docs/** — GitHub Pages で公開しているページ。いまはプライバシーポリシー
+  （<https://nokopi36.github.io/colorSample/>）だけ
 
 技術的な内容でも、性質で分けています。「Compose を使っている」は README、
 「パレットは必ず1色以上でなければ落ちる」は CLAUDE.md です。
@@ -128,5 +130,5 @@ com.nokopi.colorsample/
 ## その他
 
 - アプリ内アップデート（Google Play Core）に対応
-- プライバシーポリシーはホーム画面下部から確認できます
+- [プライバシーポリシー](https://nokopi36.github.io/colorSample/)はホーム画面下部から確認できます
 - 日本語のみ

@@ -20,8 +20,9 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.nokopi.colorsample.navigation.ColorSampleNavDisplay
 import com.nokopi.colorsample.ui.theme.ColorSampleTheme
 
-private const val PRIVACY_POLICY_URL =
-    "https://qiita.com/nokopi/private/610b9ee0ca4986d59b8d"
+// 本文は docs/index.html。GitHub Pages が master の docs/ を公開している。
+// ストア掲載欄と同じ URL を指すこと。
+private const val PRIVACY_POLICY_URL = "https://nokopi36.github.io/colorSample/"
 
 /**
  * アプリ唯一の Activity。画面遷移は Navigation 3 (NavDisplay) が持つ。

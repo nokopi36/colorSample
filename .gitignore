@@ -21,6 +21,9 @@ local.properties
 # 誤って作られがちなもの
 node_modules
 
+# Claude Code の個人設定。共有したいものは .claude/settings.json に書く
+.claude/settings.local.json
+
 # リリース署名の鍵とパスワード。絶対にコミットしない
 keystore.properties
 *.jks

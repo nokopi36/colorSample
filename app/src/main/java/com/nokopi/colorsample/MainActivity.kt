@@ -14,6 +14,7 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.nokopi.colorsample.navigation.ColorSampleNavDisplay
@@ -32,11 +33,21 @@ class MainActivity : ComponentActivity() {
     private val updateLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult(),
     ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            Toast.makeText(this, R.string.update_completed, Toast.LENGTH_SHORT).show()
-        } else {
-            // 中断された場合は onResume 側で再開を試みる。
-            Log.w(TAG, "アプリ内アップデートが完了しませんでした: resultCode=${result.resultCode}")
+        when (result.resultCode) {
+            // IMMEDIATE は更新が済むと Play がアプリを再起動するため、ここへはめったに来ない。
+            RESULT_OK ->
+                Toast.makeText(this, R.string.update_completed, Toast.LENGTH_SHORT).show()
+
+            // 見送られただけ。ダウンロード済みなら onResume 側で再開を試みる。
+            RESULT_CANCELED ->
+                Log.i(TAG, "アプリ内アップデートがキャンセルされました")
+
+            // ダウンロードやインストールの失敗。onResume の再開対象にはならない。
+            ActivityResult.RESULT_IN_APP_UPDATE_FAILED ->
+                Log.w(TAG, "アプリ内アップデートに失敗しました")
+
+            else ->
+                Log.w(TAG, "アプリ内アップデートが完了しませんでした: resultCode=${result.resultCode}")
         }
     }
 
